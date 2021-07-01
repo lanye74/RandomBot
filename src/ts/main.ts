@@ -1,9 +1,10 @@
 import * as Discord from "discord.js";
+import * as fs from "fs-extra";
 import botCommands from "./botCommands.js";
 
-
-
 const client = new Discord.Client();
+
+const config = JSON.parse(fs.readFileSync("../../config.json", {encoding: "utf8", flag: "r"}));
 
 
 
@@ -25,19 +26,17 @@ function handleMessage(messageObject: Discord.Message) {
 	const rawMessageContent = messageObject.content;
 
 
-	if(!rawMessageContent.startsWith("--")) {
+	if(!rawMessageContent.startsWith(config.prefix)) {
 		return;
 	}
 
-	const command = rawMessageContent.split("--")[1];
+	const command = rawMessageContent.split(config.prefix)[1];
 
 
 
-	if(command === "ping") {
-		botCommands.ping(messageObject, client);
-	}
+	botCommands[command](messageObject, client);
 }
 
 
 
-client.login("ODU5OTE1Mjk1MjA3NzE4OTIy.YNzohg.kCyunFs_uI2LpLGn82maZevDzWE");
+client.login(config.token);
