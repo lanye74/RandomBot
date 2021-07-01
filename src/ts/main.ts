@@ -4,7 +4,7 @@ import botCommands from "./botCommands.js";
 
 const client = new Discord.Client();
 
-const config = JSON.parse(fs.readFileSync("../../config.json", {encoding: "utf8", flag: "r"}));
+const config = JSON.parse(fs.readFileSync("./config.json", {encoding: "utf8", flag: "r"}));
 
 
 
