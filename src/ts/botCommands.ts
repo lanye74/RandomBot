@@ -1,9 +1,11 @@
 import ping from "./commands/ping.js";
+import kick from "./commands/kick.js";
 
 
 
 const botCommands: {[name: string]: Function} = {
-	ping: ping
+	ping: ping,
+	kick: kick
 };
 
 

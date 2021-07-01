@@ -4,6 +4,7 @@ import botCommands from "./botCommands.js";
 
 const client = new Discord.Client();
 
+
 const config = JSON.parse(fs.readFileSync("./config.json", {encoding: "utf8", flag: "r"}));
 
 
@@ -25,14 +26,16 @@ function ready() {
 function handleMessage(messageObject: Discord.Message) {
 	const rawMessageContent = messageObject.content;
 
+	console.log(rawMessageContent);
 
 	if(!rawMessageContent.startsWith(config.prefix)) {
 		return;
 	}
 
 	const command = rawMessageContent.split(config.prefix)[1];
+	
 
-
+	console.log(botCommands["kick"], command);
 
 	botCommands[command](messageObject, client);
 }
