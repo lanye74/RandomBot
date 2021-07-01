@@ -1,6 +1,6 @@
 import * as Discord from "discord.js";
 import * as fs from "fs-extra";
-import botCommands from "./botCommands.js";
+import Bot from "./bot.js";
 
 const client = new Discord.Client();
 
@@ -19,25 +19,22 @@ client.on("ready", () => {
 
 function ready() {
 	client.on("message", handleMessage);
+
+	Bot.setConfig(config);
 }
 
 
 
 function handleMessage(messageObject: Discord.Message) {
-	const rawMessageContent = messageObject.content;
-
-	console.log(rawMessageContent);
-
-	if(!rawMessageContent.startsWith(config.prefix)) {
+	if(!messageObject.content.startsWith(config.prefix) || !messageObject.guild) {
 		return;
 	}
 
-	const command = rawMessageContent.split(config.prefix)[1];
-	
+	if(!messageObject.guild!.available) {
+		return;
+	}
 
-	console.log(botCommands["kick"], command);
-
-	botCommands[command](messageObject, client);
+	Bot.processCommand(messageObject, client);
 }
 
 

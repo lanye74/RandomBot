@@ -1,10 +1,19 @@
-import type {Message, Client} from "discord.js";
+import type {Command} from "../types.js";
 
 
 
-export default function kick(message: Message, client: Client): void {
-	const rawId = message.content.split(" ")[1];
-	const trimmedId = rawId.slice(3, rawId.length - 2);
-
-	console.log(trimmedId);
+export default function kick(command: Command): void {
+	const {args, message} = command;
+	
+	const memberID = args[0].slice(3, -2);
+	
+	message.guild!.members.fetch(memberID)
+	.then(member => {
+		console.log(member)
+		if(member.kickable) {
+			member.kick();
+		} else {
+			message.reply("I don't have perms to ban this person :(")
+		}
+	});
 }
