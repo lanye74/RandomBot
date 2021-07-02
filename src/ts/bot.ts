@@ -7,8 +7,9 @@ import CommandHandler from "./commandHandler.js";
 
 export default class Bot { // thank god for static methods or this would be a plain object still
 	static config: BotConfig;
+	static client: Client;
 
-	static processCommand(message: Message, client: Client) {
+	static processCommand(message: Message) {
 		const text = message.content;
 
 		const inputString = text.split(this.config.prefix)[1];
@@ -17,7 +18,7 @@ export default class Bot { // thank god for static methods or this would be a pl
 
 		const command: Command = {
 			args: commandSegments.slice(1), // all but first (command type)
-			client: client,
+			client: this.client,
 			message: message,
 			name: commandSegments[0]
 		};
@@ -28,5 +29,9 @@ export default class Bot { // thank god for static methods or this would be a pl
 
 	static setConfig(config: BotConfig) {
 		this.config = config;
+	}
+
+	static setClient(client: Client) {
+		this.client = client;
 	}
 }
