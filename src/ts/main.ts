@@ -1,6 +1,6 @@
 import * as Discord from "discord.js";
 import * as fs from "fs-extra";
-import Bot from "./bot.js";
+import Bot from "./Bot.js";
 
 const client = new Discord.Client();
 
@@ -9,9 +9,10 @@ const config = JSON.parse(fs.readFileSync("./config.json", {encoding: "utf8", fl
 
 
 
-client.on("ready", () => {
+client.on("ready", () => { // move client into Bot class?
 	console.log("ready");
 
+	
 	ready();
 });
 
@@ -26,7 +27,7 @@ function ready() {
 
 
 function handleMessage(messageObject: Discord.Message) {
-	if(!messageObject.content.startsWith(config.prefix) || !messageObject.guild) {
+	if(!messageObject.content.startsWith(Bot.config.prefix) || !messageObject.guild) {
 		return;
 	}
 
@@ -35,6 +36,8 @@ function handleMessage(messageObject: Discord.Message) {
 	}
 
 	Bot.processCommand(messageObject, client);
+
+	console.log(messageObject);
 }
 
 

@@ -3,5 +3,7 @@ src/js/
 
 config.json
 
+src/ts/terrorizeSofy.ts
+
 *.log
 logs/
