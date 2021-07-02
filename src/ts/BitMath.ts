@@ -27,4 +27,23 @@ export default class BitMath {
 
 		return this.power2Sum(input - (2 ** guessPower), collectedPowers);
 	}
+
+	static power2SumNew(input: number): number[] {
+		const bits = input.toString(2).split("").map(bit => parseInt(bit)).reverse(); // not necessary to parseInt, but nice
+		// note: .map(parseInt) fails for some reason, second bit becomes NaN
+
+		console.log(bits)
+
+		const bitLocations: number[] = [];
+
+		for(let i = 0; i < bits.length; i++) {
+			if(bits[i] === 0) {
+				continue;
+			} else {
+				bitLocations.push(i);
+			}
+		}
+
+		return bitLocations;
+	}
 }
