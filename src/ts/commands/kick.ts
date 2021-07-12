@@ -15,16 +15,16 @@ export default async function kick(command: Command): Promise<void> {
 
 			
 	// 	} else {
-	// 		message.reply("I don't have perms to ban this person :(") //  lastMessageID
+	// 		message.reply("I don't have perms to kick this person :(") //  lastMessageID
 	// 	}
 	// });
 
 
-	const [invoker, target] = await Promise.all([ // :)
-		message.guild!.members.fetch(message.author.id),
-		message.guild!.members.fetch(targetID)
+	const [invoker/*Perms*/, target/*Perms*/] = await Promise.all([ // :)
+		/*(await */message.guild!.members.fetch(message.author.id)/*).permissions.serialize()*/,
+		/*(await */message.guild!.members.fetch(targetID)/*).permissions.serialize()(*/
 	]);
 
 
-	console.log(invoker, target);
+	console.log({invoker/*Perms*/, target/*Perms*/});
 }
