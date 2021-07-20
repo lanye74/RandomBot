@@ -3,28 +3,77 @@ import type {Command} from "../types.js";
 
 
 export default async function kick(command: Command): Promise<void> {
-	const {args, message} = command;
+	const {args, message, sender} = command;
 	
 	const targetID = args[0].slice(3, -1);
-	
-	// message.guild!.members.fetch(memberID)
-	// .then(member => {
-	// 	console.log(member)
-	// 	if(member.kickable) {
-	// 		(args[1]) ? member.kick(args[1]) : member.kick();
-
-			
-	// 	} else {
-	// 		message.reply("I don't have perms to kick this person :(") //  lastMessageID
-	// 	}
-	// });
+	const reason = args.slice(1).join(" ") || undefined;
 
 
-	const [invoker/*Perms*/, target/*Perms*/] = await Promise.all([ // :)
-		/*(await */message.guild!.members.fetch(message.author.id)/*).permissions.serialize()*/,
-		/*(await */message.guild!.members.fetch(targetID)/*).permissions.serialize()(*/
+	// ----
+
+	const [invoker, target] = await Promise.all([ // :)
+		message.guild!.members.fetch(sender.id),
+		message.guild!.members.fetch(targetID)
 	]);
 
 
-	console.log({invoker/*Perms*/, target/*Perms*/});
+	// preliminary checks to kicking
+
+	if(!target.kickable) {
+		message.channel.send("I don't have permission to kick this person.");
+		return;
+	}
+
+	if(invoker.guild.owner === invoker) {
+		message.channel.send(`${target.user.tag} was kicked${(reason) ? `for ${reason}.` : "."}`);
+		target.kick(reason);
+		return;
+	}
+
+	if(!invoker.permissions.has("KICK_MEMBERS")) {
+		message.channel.send("You don't have permission to kick people.");
+		return;
+	}
+
+	// ----
+
+	// with some quick testing, a non admin can kick an admin if set up poorly
+	// target.kick();
+
+	// time to figure out role hierarchy
+
+
+	const invokerRolesMap = invoker.roles.cache; // is there a better way to write this?
+	const targetRolesMap = target.roles.cache;
+
+
+	// find the highest role granting kick perms of both members, compare which role is higher, determine if they can kick or not
+
+
+	const invokerRolesArray = Array.from(invokerRolesMap.values());
+	const targetRolesArray = Array.from(targetRolesMap.values());
+	
+	invokerRolesArray.sort((roleA, roleB) => roleB.position - roleA.position); // sort by descending roles
+	targetRolesArray.sort((roleA, roleB) => roleB.position - roleA.position);
+
+	
+	const highestInvokerKickRole = invokerRolesArray.find(role => role.permissions.has("KICK_MEMBERS")); // find the highest role with kick perms
+	const highestTargetKickRole = targetRolesArray.find(role => role.permissions.has("KICK_MEMBERS"));
+
+
+	// user can be kicked
+	if(!highestTargetKickRole || // target has no kick perms
+		highestInvokerKickRole!.position > highestTargetKickRole!.position
+	) {
+		message.channel.send(`${target.user.tag} was kicked${(reason) ? `for ${reason}.` : "."}`);
+		target.kick(reason);
+		return;
+	}
+
+
+	// user cannot be kicked
+	if(highestInvokerKickRole!.position <= highestTargetKickRole!.position) {
+		message.channel.send(`You don't have permissions to kick ${target.user.tag}.`);
+		return;
+	}
 }

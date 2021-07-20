@@ -2,6 +2,7 @@ node_modules/
 src/js/
 
 config.json
+compile.js
 
 src/ts/terrorizeSofy.ts
 

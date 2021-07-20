@@ -1,14 +1,12 @@
 import * as Discord from "discord.js";
 import * as fs from "fs-extra";
 import bot from "./Bot.js";
-import f from "./util/console.js";
-// default exports can be renamed however I want without anything fancy
 
 
 
 bot.setConfig(
 	JSON.parse(
-		fs.readFileSync("./config.json", {encoding: "utf8", flag: "r"})
+		fs.readFileSync("./config.json", {encoding: "utf8"})
 	)
 );
 
@@ -19,27 +17,20 @@ bot.client.login(bot.config.token);
 
 
 
-
 bot.client.on("ready", () => {
-	console.log(f("Bold + Green", "[Bot]", "Reset + White", " Ready!"));
+	bot.log("Ready!");
 
-	ready();
+	// setup handler for messages
+	bot.client.on("message", handleMessage);
 });
 
 
 
-function ready() {
-	bot.client.on("message", handleMessage);
-}
-
-
-
 function handleMessage(message: Discord.Message) {
-	if(!message.content.startsWith(bot.config.prefix) || !message.guild) {
-		return;
-	}
-
-	if(!message.guild!.available) {
+	if(!message.content.startsWith(bot.config.prefix) ||
+		!message.guild ||
+		!message.guild!.available
+	) {
 		return;
 	}
 

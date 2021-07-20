@@ -2,9 +2,10 @@ enum ConsoleColors {
 	RESET = "\x1b[0m",
 	BOLD = "\x1b[1m",
 	FAINT = "\x1b[2m",
+	UNDERLINE = "\x1b[4m",
 	UNDERSCORE = "\x1b[4m",
 	BLINK = "\x1b[5m",
-	REVERSE = "\x1b[7m",
+	INVERSE = "\x1b[7m",
 	HIDDEN = "\x1b[8m",
 
 
@@ -38,13 +39,13 @@ enum ConsoleColors {
 
 type ConsoleColor = keyof typeof ConsoleColors;
 
-function CCify(key: string): string {
+function GetCC(key: string): string {
 	return ConsoleColors[<ConsoleColor>key.toUpperCase()];
 }
 
 
 
-export default function f(...args: string[]): string {
+export default function format(...args: string[]): string {
 	const argumentPairs: string[][] = [];
 	let stringBuilder = "";
 
@@ -64,11 +65,11 @@ export default function f(...args: string[]): string {
 		
 
 		for(const format of formats) {
-			stringBuilder += CCify(format); // convert to appropriate console color
+			stringBuilder += GetCC(format); // convert to appropriate console color
 		}
 
 		stringBuilder += text;
 	}
 
-	return stringBuilder + CCify("Reset");
+	return stringBuilder + GetCC("Reset");
 }

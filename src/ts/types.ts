@@ -1,4 +1,4 @@
-import type {Client, Message} from "discord.js";
+import type {Client, Message, User} from "discord.js";
 
 
 
@@ -13,5 +13,6 @@ export type Command = {
 	args: string[],
 	client: Client,
 	message: Message,
-	name: string
+	name: string,
+	sender: User
 };
