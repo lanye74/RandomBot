@@ -1,4 +1,5 @@
 import type {Client, Message, User} from "discord.js";
+import Bot from "./Bot";
 
 
 
