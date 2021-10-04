@@ -3,7 +3,7 @@ import type {Command} from "../types.js";
 
 
 export default async function kick(command: Command): Promise<void> {
-	const {args, message, sender} = command;
+	const {args, message, sender, guild} = command;
 	
 	const targetID = args[0].slice(3, -1);
 	const reason = args.slice(1).join(" ") || undefined;
@@ -12,8 +12,8 @@ export default async function kick(command: Command): Promise<void> {
 	// ----
 
 	const [invoker, target] = await Promise.all([ // :)
-		message.guild!.members.fetch(sender.id),
-		message.guild!.members.fetch(targetID)
+		guild.members.fetch(sender.id),
+		guild.members.fetch(targetID)
 	]);
 
 

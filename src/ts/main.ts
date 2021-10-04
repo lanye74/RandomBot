@@ -1,12 +1,15 @@
 import * as Discord from "discord.js";
 import * as fs from "fs-extra";
+// @ts-ignore
+const {readFileSync} = fs.default;
+
 import bot from "./Bot.js";
 
 
 
 bot.setConfig(
 	JSON.parse(
-		fs.readFileSync("./config.json", {encoding: "utf8"})
+		readFileSync("./config.json", {encoding: "utf8"})
 	)
 );
 

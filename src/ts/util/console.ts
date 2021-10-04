@@ -62,7 +62,7 @@ export default function format(...args: string[]): string {
 	for(const currentPair of argumentPairs) {
 		const [formatString, text] = currentPair;
 		const formats = formatString.split("+").map(format => format.trim());
-		
+
 
 		for(const format of formats) {
 			stringBuilder += GetCC(format); // convert to appropriate console color

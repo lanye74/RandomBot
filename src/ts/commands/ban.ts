@@ -6,7 +6,7 @@ import type {Command} from "../types.js";
 
 
 export default async function ban(command: Command): Promise<void> {
-	const {args, message, sender} = command;
+	const {args, message, guild, sender} = command;
 	
 	const targetID = args[0].slice(3, -1);
 	
@@ -33,8 +33,8 @@ export default async function ban(command: Command): Promise<void> {
 	// ----
 
 	const [invoker, target] = await Promise.all([ // :)
-		message.guild!.members.fetch(sender.id),
-		message.guild!.members.fetch(targetID)
+		guild.members.fetch(sender.id),
+		guild.members.fetch(targetID)
 	]);
 
 

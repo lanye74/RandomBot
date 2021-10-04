@@ -1,7 +1,7 @@
 import type {Message, Client} from "discord.js";
 import type {BotConfig, Command} from "./types.js";
 
-import CommandHandler from "./commandHandler.js";
+import CommandHandler from "./CommandHandler.js";
 import f from "./util/console.js";
 // default exports can be renamed however I want without anything fancy
 
@@ -29,12 +29,13 @@ export default class Bot { // thank god for static methods or this would be a pl
 		const text = message.content;
 
 		const inputString = text.split(this.config.prefix)[1];
-		const commandSegments = inputString.split(" ");
+		const commandSegments = inputString.trim().split(" ");
 
 
 		const command: Command = {
 			args: commandSegments.slice(1), // all but first (command type)
 			client: this.client,
+			guild: message.guild!,
 			message: message,
 			name: commandSegments[0],
 			sender: message.author
@@ -51,5 +52,4 @@ export default class Bot { // thank god for static methods or this would be a pl
 	static setConfig(config: BotConfig): void {
 		this.config = config;
 	}
-
 }

@@ -1,5 +1,4 @@
-import type {Client, Message, User} from "discord.js";
-import Bot from "./Bot";
+import type {Client, Guild, Message, User} from "discord.js";
 
 
 
@@ -13,6 +12,7 @@ export type BotConfig = {
 export type Command = {
 	args: string[],
 	client: Client,
+	guild: Guild,
 	message: Message,
 	name: string,
 	sender: User
