@@ -2,6 +2,7 @@ node_modules/
 src/js/
 
 config.json
+db.json
 
 src/ts/terrorizeSofy.ts
 

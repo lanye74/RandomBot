@@ -3,7 +3,7 @@ import type {Command} from "../types.js";
 
 
 export default async function kick(command: Command): Promise<void> {
-	const {args, message, sender, guild} = command;
+	const {args, channel, sender, guild} = command;
 	
 	const targetID = args[0].slice(3, -1);
 	const reason = args.slice(1).join(" ") || undefined;
@@ -20,18 +20,18 @@ export default async function kick(command: Command): Promise<void> {
 	// preliminary checks to kicking
 
 	if(!target.kickable) {
-		message.channel.send("I don't have permission to kick this person.");
+		channel.send("I don't have permission to kick this person.");
 		return;
 	}
 
 	if(invoker.guild.owner === invoker) {
-		message.channel.send(`${target.user.tag} was kicked${(reason) ? `for ${reason}.` : "."}`);
+		channel.send(`${target.user.tag} was kicked${(reason) ? `for ${reason}.` : "."}`);
 		target.kick(reason);
 		return;
 	}
 
 	if(!invoker.permissions.has("KICK_MEMBERS")) {
-		message.channel.send("You don't have permission to kick people.");
+		channel.send("You don't have permission to kick people.");
 		return;
 	}
 
@@ -65,7 +65,7 @@ export default async function kick(command: Command): Promise<void> {
 	if(!highestTargetKickRole || // target has no kick perms
 		highestInvokerKickRole!.position > highestTargetKickRole!.position
 	) {
-		message.channel.send(`${target.user.tag} was kicked${(reason) ? `for ${reason}.` : "."}`);
+		channel.send(`${target.user.tag} was kicked${(reason) ? `for ${reason}.` : "."}`);
 		target.kick(reason);
 		return;
 	}
@@ -73,7 +73,7 @@ export default async function kick(command: Command): Promise<void> {
 
 	// user cannot be kicked
 	if(highestInvokerKickRole!.position <= highestTargetKickRole!.position) {
-		message.channel.send(`You don't have permissions to kick ${target.user.tag}.`);
+		channel.send(`You don't have permissions to kick ${target.user.tag}.`);
 		return;
 	}
 }

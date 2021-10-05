@@ -7,7 +7,7 @@ import type {Command} from "../types.js";
 
 
 export default async function suspendRole(command: Command): Promise<void> {
-	const {args, message, sender, guild} = command;
+	const {args, channel, message, sender, guild} = command;
 	let saveData = "";
 
 
@@ -15,7 +15,7 @@ export default async function suspendRole(command: Command): Promise<void> {
 	const senderGuildMember = await guild.members.fetch(sender.id);
 
 	if(!senderGuildMember.permissions.has("MANAGE_ROLES")) {
-		message.channel.send("You don't have the necessary perms to do that.")
+		channel.send("You don't have the necessary perms to do that.")
 		return;
 	}
 
@@ -24,7 +24,7 @@ export default async function suspendRole(command: Command): Promise<void> {
 	const role = await guild.roles.fetch(args[0]);
 
 	if(!role) {
-		message.channel.send("There is no role with this ID.");
+		channel.send("There is no role with this ID.");
 		return;
 	}
 
@@ -36,7 +36,7 @@ export default async function suspendRole(command: Command): Promise<void> {
 	const members = await guild.members.fetch();
 	
 	if(members.size === 0) {
-		message.channel.send("No one has this role.");
+		channel.send("No one has this role.");
 		return;
 	}
 
@@ -80,5 +80,5 @@ export default async function suspendRole(command: Command): Promise<void> {
 	writeFileSync("./db.json", newJSON);
 
 
-	message.channel.send(`Successfully stored roles away under the message ID (\`${message.id}\`).`);
+	channel.send(`Successfully stored roles away as the message ID of the command (\`${saveName}\`).`);
 }

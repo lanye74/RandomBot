@@ -6,7 +6,7 @@ import type {Command} from "../types.js";
 
 
 export default async function ban(command: Command): Promise<void> {
-	const {args, message, guild, sender} = command;
+	const {args, channel, guild, sender} = command;
 	
 	const targetID = args[0].slice(3, -1);
 	
@@ -20,7 +20,7 @@ export default async function ban(command: Command): Promise<void> {
 	if(!isNaN(parseInt(args[1]))) { // valid day count
 		banOptions.days = parseInt(args[1]);
 	} else {
-		message.channel.send(`Invalid command syntax; try ${bot.config.prefix}ban {user} {optional days} {optional reason}`);
+		channel.send(`Invalid command syntax; try ${bot.config.prefix}ban {user} {optional days} {optional reason}`);
 		return;
 	}
 
@@ -41,18 +41,18 @@ export default async function ban(command: Command): Promise<void> {
 	// preliminary checks to banning
 
 	if(!target.bannable) {
-		message.channel.send("I don't have permission to ban this person.");
+		channel.send("I don't have permission to ban this person.");
 		return;
 	}
 
 	if(invoker.guild.owner === invoker) {
-		message.channel.send(`${target.user.tag} was banned${(banOptions) ? `for ${banOptions}.` : "."}`);
+		channel.send(`${target.user.tag} was banned${(banOptions) ? `for ${banOptions}.` : "."}`);
 		target.ban(banOptions);
 		return;
 	}
 
 	if(!invoker.permissions.has("BAN_MEMBERS")) {
-		message.channel.send("You don't have permission to ban people.");
+		channel.send("You don't have permission to ban people.");
 		return;
 	}
 
@@ -86,7 +86,7 @@ export default async function ban(command: Command): Promise<void> {
 	if(!highestTargetBanRole || // target has no ban perms
 		highestInvokerBanRole!.position > highestTargetBanRole!.position
 	) {
-		message.channel.send(`${target.user.tag} was banned${(banOptions) ? `for ${banOptions}.` : "."}`);
+		channel.send(`${target.user.tag} was banned${(banOptions) ? `for ${banOptions}.` : "."}`);
 		target.ban(banOptions);
 		return;
 	}
@@ -94,7 +94,7 @@ export default async function ban(command: Command): Promise<void> {
 
 	// user cannot be banned
 	if(highestInvokerBanRole!.position <= highestTargetBanRole!.position) {
-		message.channel.send(`You don't have permissions to ban ${target.user.tag}.`);
+		channel.send(`You don't have permissions to ban ${target.user.tag}.`);
 		return;
 	}
 }
