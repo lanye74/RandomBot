@@ -3,9 +3,9 @@ import type {Command} from "../types.js";
 
 
 export default async function kick(command: Command): Promise<void> {
-	const {args, channel, sender, guild} = command;
+	const {args, channel, guild, mentions, sender} = command;
 	
-	const targetID = args[0].slice(3, -1);
+	const targetID = mentions[0].id;
 	const reason = args.slice(1).join(" ") || undefined;
 
 

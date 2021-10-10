@@ -37,6 +37,7 @@ export default class Bot { // thank god for static methods or this would be a pl
 			channel: <TextChannel>message.channel,
 			client: this.client,
 			guild: message.guild!,
+			mentions: Array.from(message.mentions.users.values()),
 			message: message,
 			name: commandSegments[0],
 			sender: message.author

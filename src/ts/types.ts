@@ -14,6 +14,7 @@ export type Command = {
 	channel: TextChannel,
 	client: Client,
 	guild: Guild,
+	mentions: User[],
 	message: Message,
 	name: string,
 	sender: User

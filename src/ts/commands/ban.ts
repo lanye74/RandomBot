@@ -6,16 +6,15 @@ import type {Command} from "../types.js";
 
 
 export default async function ban(command: Command): Promise<void> {
-	const {args, channel, guild, sender} = command;
-	
-	const targetID = args[0].slice(3, -1);
-	
-	// args.slice(1).join(" ") || undefined
+	const {args, channel, guild, mentions, sender} = command;
+
 	const banOptions: BanOptions = {
 		days: undefined,
 		reason: undefined
 	};
 	
+	const targetID = mentions[0].id;
+
 
 	if(!isNaN(parseInt(args[1]))) { // valid day count
 		banOptions.days = parseInt(args[1]);

@@ -5,18 +5,22 @@ import kick from "./commands/kick.js";
 import debug from "./commands/debug.js";
 import suspendRole from "./commands/suspendRole.js";
 import releaseRole from "./commands/releaseRole.js";
+import spamPing from "./commands/spamPing.js";
+import help from "./commands/help.js";
 
 // import bot from "./Bot.js";
 
 
 
 export default class CommandHandler {
-	static commands: {[name: string]: Function} = { // enum...???
+	static commands: {[name: string]: Function} = { // make this use dynamic imports via reading the command folder
 		ping,
 		kick,
 		debug,
 		suspendRole,
-		releaseRole
+		releaseRole,
+		spamPing,
+		help
 	};
 	
 	static run(command: Command): void {
