@@ -18,6 +18,7 @@ export default async function spamPing(command: Command): Promise<void> {
 
 	if(howMany < 1 || howMany > 100) {
 		channel.send("<amount> should be a value between 1 and 100.");
+		return;
 	}
 
 	// rate limit smh
@@ -25,6 +26,6 @@ export default async function spamPing(command: Command): Promise<void> {
 	for(let i = 0; i < howMany; i++) {
 		channel.send(`<@${who.id}> ${text}`);
 		
-		await sleep(500);
+		await sleep(1500);
 	}
 }
