@@ -25,13 +25,14 @@ export default class CommandHandler {
 			.map((file: string) => file = file.slice(0, file.length - 3)); // cut to names without extensions
 
 		
-		commands.forEach((command: string, index: number) => {
-			import(`./commands/${command}.js`) // this could ofc be await and probably should be but I like the commands appearing in order... could do some funny business with that though (i.e. command number is based on when it appears, not on its index, but too lazy idk lmao)
-			.then(module => {
-				this.commands[command] = module.default;
-			});
-
-			Bot.info(`(${index + 1}/${commands.length}) Loaded command ${command}.`);
+		let counter = 0;
+		
+		commands.forEach(async command => {
+			const module = await import(`./commands/${command}.js`)
+			
+			this.commands[command] = module.default;
+			
+			Bot.info(`(${++counter}/${commands.length}) Loaded command ${command}.`);
 		});
 	}
 	
