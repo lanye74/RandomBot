@@ -14,14 +14,17 @@ export default class Bot { // thank god for static methods or this would be a pl
 
 	// logging -
 
-	static error(...args: string[]): void {
-		console.log(f("Bold + Red", "[Bot] ", "Reset + White", ...args));
-	}
-
 	static log(...args: string[]): void {
 		console.log(f("Bold + Green", "[Bot] ", "Reset + White", ...args));
 	}
 
+	static info(...args: string[]): void {
+		console.log(f("Bold + Blue", "[Bot] ", "Reset + White", ...args));
+	}
+
+	static error(...args: string[]): void {
+		console.log(f("Bold + Red", "[Bot] ", "Reset + White", ...args));
+	}
 
 	// actual bot things
 

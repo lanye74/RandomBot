@@ -1,5 +1,5 @@
 import * as fs from "fs-extra";
-import bot from "../Bot.js";
+import Bot from "../Bot.js";
 // @ts-ignore
 const {existsSync, readFileSync, writeFileSync} = fs.default;
 
@@ -22,7 +22,7 @@ export default async function releaseRole(command: Command): Promise<void> {
 
 
 	if(!existsSync("./db.json")) {
-		channel.send(`Please run \`${bot.config.prefix}suspendRole\` at least once to initialize the database.`);
+		channel.send(`Please run \`${Bot.config.prefix}suspendRole\` at least once to initialize the database.`);
 		return;
 	}
 

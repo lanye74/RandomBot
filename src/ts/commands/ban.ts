@@ -1,4 +1,4 @@
-import bot from "../Bot.js";
+import Bot from "../Bot.js";
 
 import type {BanOptions} from "discord.js";
 import type {Command} from "../types.js";
@@ -19,7 +19,7 @@ export default async function ban(command: Command): Promise<void> {
 	if(!isNaN(parseInt(args[1]))) { // valid day count
 		banOptions.days = parseInt(args[1]);
 	} else {
-		channel.send(`Invalid command syntax; try ${bot.config.prefix}ban {user} {optional days} {optional reason}`);
+		channel.send(`Invalid command syntax; try ${Bot.config.prefix}ban {user} {optional days} {optional reason}`);
 		return;
 	}
 

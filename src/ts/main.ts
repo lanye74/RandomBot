@@ -3,39 +3,43 @@ import * as fs from "fs-extra";
 // @ts-ignore
 const {readFileSync} = fs.default;
 
-import bot from "./Bot.js";
+import Bot from "./Bot.js";
+import CommandHandler from "./CommandHandler.js";
 
 
 
-bot.setConfig(
+Bot.setConfig(
 	JSON.parse(
 		readFileSync("./config.json", {encoding: "utf8"})
 	)
 );
 
-bot.setClient(new Discord.Client());
-
-bot.client.login(bot.config.token);
-// Note: I really don't like how this looks but I don't have much of an option
+Bot.setClient(new Discord.Client());
+Bot.client.login(Bot.config.token);
 
 
+CommandHandler.init();
 
-bot.client.on("ready", () => {
-	bot.log("Ready!");
+
+
+Bot.client.on("ready", () => {
+	Bot.log("Ready!");
+
+	Bot.client.user!.setActivity(`listening to ${Bot.config.prefix}`)
 
 	// setup handler for messages
-	bot.client.on("message", handleMessage);
+	Bot.client.on("message", handleMessage);
 });
 
 
 
 function handleMessage(message: Discord.Message) {
-	if(!message.content.startsWith(bot.config.prefix) ||
+	if(!message.content.startsWith(Bot.config.prefix) ||
 		!message.guild ||
 		!message.guild!.available
 	) {
 		return;
 	}
 
-	bot.processCommand(message);
+	Bot.processCommand(message);
 }
