@@ -25,7 +25,7 @@ CommandHandler.init();
 Bot.client.on("ready", () => {
 	Bot.log("Ready!");
 
-	Bot.client.user!.setActivity(`listening to ${Bot.config.prefix}`)
+	Bot.client.user!.setActivity(`${Bot.config.prefix}help`, {type: "LISTENING"});
 
 	// setup handler for messages
 	Bot.client.on("message", handleMessage);

@@ -9,14 +9,11 @@ import type {Command} from "./types.js";
 
 
 
-
-
-
 export default class CommandHandler {
 	static commands: {[name: string]: Function} = {};
 
 	static init(): void {
-		console.log("initted")
+		Bot.info("Loading commands...");
 
 		const target = (new URL("./commands/", import.meta.url).pathname).slice(1); // slice removes the prefixed /
 
@@ -41,7 +38,6 @@ export default class CommandHandler {
 			this.commands[command.name](command);
 		} catch {
 			command.channel.send("The command you're trying to use doesn't exist.");
-			return;
 		}
 	}
 }
