@@ -34,10 +34,12 @@ export default class CommandHandler {
 	}
 	
 	static run(command: Command): void {
-		try {
-			this.commands[command.name](command);
-		} catch {
+		const commandFunction: Function | undefined = this.commands[command.name](command);
+
+		if(!commandFunction) {
 			command.channel.send("The command you're trying to use doesn't exist.");
+		} else {
+			commandFunction(command);
 		}
 	}
 }
