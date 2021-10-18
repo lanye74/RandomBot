@@ -25,7 +25,7 @@ export default class CommandHandler {
 		let counter = 0;
 		
 		commands.forEach(async command => {
-			const module = await import(`./commands/${command}.js`)
+			const module = await import(`./commands/${command}.js`);
 			
 			this.commands[command] = module.default;
 			
@@ -36,9 +36,12 @@ export default class CommandHandler {
 	static run(command: Command): void {
 		const commandFunction: Function | undefined = this.commands[command.name](command);
 
+
+		// why does this not work ffs
 		if(!commandFunction) {
 			command.channel.send("The command you're trying to use doesn't exist.");
 		} else {
+			console.log(commandFunction);
 			commandFunction(command);
 		}
 	}

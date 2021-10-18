@@ -1,3 +1,4 @@
+import { debug } from "console";
 import * as Discord from "discord.js";
 import * as fs from "fs-extra";
 // @ts-ignore
@@ -34,9 +35,12 @@ Bot.client.on("ready", () => {
 
 
 function handleMessage(message: Discord.Message) {
+	debugger;
+
 	if(!message.content.startsWith(Bot.config.prefix) ||
 		!message.guild ||
-		!message.guild!.available
+		!message.guild!.available ||
+		message.author.bot
 	) {
 		return;
 	}
