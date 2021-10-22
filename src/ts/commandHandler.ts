@@ -36,9 +36,6 @@ export default class CommandHandler {
 	static run(command: Command): void {
 		const commandFunction: Function | undefined = this.commands[command.name];
 
-		const n = this.commands;
-		//@ts-ignore
-		console.log({n, commandFunction});
 
 		if(!commandFunction) {
 			command.channel.send("The command you're trying to use doesn't exist.");
