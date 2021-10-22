@@ -34,14 +34,16 @@ export default class CommandHandler {
 	}
 	
 	static run(command: Command): void {
-		const commandFunction: Function | undefined = this.commands[command.name](command);
+		const commandFunction: Function | undefined = this.commands[command.name];
 
+		const n = this.commands;
+		//@ts-ignore
+		console.log({n, commandFunction});
 
-		// why does this not work ffs
 		if(!commandFunction) {
 			command.channel.send("The command you're trying to use doesn't exist.");
+			return;
 		} else {
-			console.log(commandFunction);
 			commandFunction(command);
 		}
 	}
