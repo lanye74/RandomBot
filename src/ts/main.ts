@@ -14,16 +14,19 @@ Bot.setConfig(
 	)
 );
 
+
 Bot.setClient(new Discord.Client());
-Bot.client.login(Bot.config.token);
 
 
-CommandHandler.init();
+CommandHandler.loadCommands()
+.then(commands => CommandHandler.register(commands))
+.then(() => Bot.info("Commands loaded successfully."))
+.then(() => Bot.client.login(Bot.config.token));
 
 
 
 Bot.client.on("ready", () => {
-	Bot.log("Ready!");
+	Bot.log("", "Bold", "Ready.");
 
 	Bot.client.user!.setActivity(`${Bot.config.prefix}help`, {type: "LISTENING"});
 
@@ -34,8 +37,6 @@ Bot.client.on("ready", () => {
 
 
 function handleMessage(message: Discord.Message) {
-	debugger;
-
 	if(!message.content.startsWith(Bot.config.prefix) ||
 		!message.guild ||
 		!message.guild!.available ||

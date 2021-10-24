@@ -12,7 +12,7 @@ import type {Command} from "./types.js";
 export default class CommandHandler {
 	static commands: {[name: string]: Function} = {};
 
-	static init(): void {
+	static loadCommands(): Promise<any> {
 		const commandLoaders: Function[] = [];
 		
 
@@ -31,16 +31,20 @@ export default class CommandHandler {
 
 
 
-		Promise.all(commandLoaders.map(loader => loader()))
-		.then(commands => {
-			commands.forEach((command, _number) => {
+		return Promise.all(commandLoaders.map(loader => loader()));
+	}
+
+	static register(input: any | any[]) { // type checking is ridiculous because the type of a module is typeof import(module)
+		if(input instanceof Array) {
+			input.forEach(command => {
 				// Bot.info(`(${number}/${commands.length}) Loaded ${command.default.name}.`);
 				this.commands[command.default.name] = command.default;
 			});
-		})
-		.then(() => Bot.info("Commands loaded successfully."));
+		} else {
+			this.commands[input.default.name] = input.default;
+		}
 	}
-
+	
 	static loadCommand(command: string): Promise<any> {
 		return new Promise(resolve => {
 			import(`./commands/${command}`)
