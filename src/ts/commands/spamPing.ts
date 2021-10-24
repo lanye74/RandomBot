@@ -12,6 +12,7 @@ export default class spamPing extends RBCommand {
 	static usage = "spamPing [mention user] <how many times> <optional text>";
 
 	private static queue: [string, number][] = [];
+	private static pinging: boolean = false;
 
 	static async run(command: MessageCommand): Promise<void> {
 		const {args, channel, mentions} = command;
@@ -31,7 +32,7 @@ export default class spamPing extends RBCommand {
 		}
 
 
-		if(this.queue.length === 0) {
+		if(this.queue.length === 0 && !this.pinging) {
 			this.spamPing(`<@${who.id}> ${text}`, howMany, channel);
 		} else {
 			this.queue.push([`<@${who.id}> ${text}`, howMany]);
@@ -39,11 +40,14 @@ export default class spamPing extends RBCommand {
 	}
 
 	private static async spamPing(spamString: string, howMany: number, channel: TextChannel): Promise<void> {
+		this.pinging = true;
+
 		for(let i = 0; i < howMany; i++) {
 			channel.send(spamString);
-
 			await sleep(1500);
 		}
+
+		this.pinging = false;
 
 
 		if(this.queue.length === 0) {

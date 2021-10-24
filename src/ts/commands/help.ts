@@ -18,7 +18,7 @@ export default class help extends RBCommand {
 		const embed = new MessageEmbed();
 		embed.setColor("#7b42f5");
 
-		if(!args[1]) { // general help command
+		if(!args[0]) { // general help command
 			embed.setTitle("Commands for Lanye's Utilities");
 
 			let text = "";
@@ -28,11 +28,12 @@ export default class help extends RBCommand {
 				text += `${command.name} | ${command.description}\n`;
 			});
 
-			embed.setDescription(text.trim);
+			embed.setDescription(text.trim());
 
-			embed.setFooter(`Use \`${Bot.config.prefix}help <command>\` to see information on a specific command`);
+			embed.setFooter(`Use "${Bot.config.prefix}help <command>" to see information on a specific command`);
 		} else {
-			const command = CommandHandler.commands[args[1]];
+			const command = CommandHandler.commands[args[0]];
+
 
 			if(!command) {
 				channel.send("The command you're looking for doesn't exist.");

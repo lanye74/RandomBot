@@ -93,7 +93,7 @@ export default class ban extends RBCommand {
 		if(!highestTargetBanRole || // target has no ban perms
 			highestInvokerBanRole!.position > highestTargetBanRole!.position
 		) {
-			channel.send(`${target.user.tag} was banned${(banOptions) ? `for ${banOptions}.` : "."}`);
+			channel.send(`${target.user.tag} was banned.`);
 			target.ban(banOptions);
 			return;
 		}

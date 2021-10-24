@@ -1,6 +1,6 @@
 {
-	"name": "discord-bot",
-	"version": "1.4.0",
+	"name": "random-bot",
+	"version": "2.0.0",
 	"description": "Funny bot",
 	"main": "main.js",
 	"type": "module",

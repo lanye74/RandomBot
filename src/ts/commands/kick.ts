@@ -72,7 +72,7 @@ export default class kick extends RBCommand {
 		if(!highestTargetKickRole || // target has no kick perms
 			highestInvokerKickRole!.position > highestTargetKickRole!.position
 		) {
-			channel.send(`${target.user.tag} was kicked${(reason) ? `for ${reason}.` : "."}`);
+			channel.send(`${target.user.tag} was kicked${(reason) ? ` for ${reason}.` : "."}`);
 			target.kick(reason);
 			return;
 		}
