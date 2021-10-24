@@ -1,6 +1,7 @@
+import RBCommand from "../RBCommand.js";
+
 import type {BanOptions} from "discord.js";
 import type {MessageCommand} from "../types.js";
-import RBCommand from "../RBCommand.js";
 
 
 

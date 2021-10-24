@@ -1,10 +1,11 @@
 import RBCommand from "../RBCommand.js";
+
 import type {MessageCommand} from "../types.js";
 
 
 
 export default class kick extends RBCommand {
-	static description = `Kicks a user.\n\nUsage:\`kick [mention user] <optional reason>\``;
+	static description = `Kicks a user.\n\nUsage:\`${this.prefix}kick [mention user] <optional reason>\``;
 	static friendlyName = "Kick";
 
 	static async run(command: MessageCommand): Promise<void> {
