@@ -1,21 +1,15 @@
+import Bot from "./Bot.js";
+import CommandHandler from "./CommandHandler.js";
 import * as Discord from "discord.js";
 import * as fs from "fs-extra";
 // @ts-ignore
 const {readFileSync} = fs.default;
 
-import Bot from "./Bot.js";
-import CommandHandler from "./CommandHandler.js";
 
 
+Bot.config = JSON.parse(readFileSync("./config.json", {encoding: "utf8"}));
 
-Bot.setConfig(
-	JSON.parse(
-		readFileSync("./config.json", {encoding: "utf8"})
-	)
-);
-
-
-Bot.setClient(new Discord.Client());
+Bot.client = new Discord.Client();
 
 
 CommandHandler.loadCommands()

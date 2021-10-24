@@ -1,5 +1,5 @@
-import RBCommand from "../RBCommand.js";
 import * as fs from "fs-extra";
+import RBCommand from "../RBCommand.js";
 // @ts-ignore
 const {readFileSync} = fs.default;
 

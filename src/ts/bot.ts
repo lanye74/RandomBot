@@ -1,32 +1,14 @@
-import type {Message, Client, TextChannel} from "discord.js";
-import type {BotConfig, MessageCommand} from "./types.js";
-
 import CommandHandler from "./CommandHandler.js";
 import f from "./util/console.js";
-// default exports can be renamed however I want without anything fancy
+
+import type {Client, Message, TextChannel} from "discord.js";
+import type {BotConfig, MessageCommand} from "./types.js";
 
 
 
 export default class Bot { // thank god for static methods or this would be a plain object still
 	static client: Client;
 	static config: BotConfig;
-
-
-	// logging -
-
-	static log(...args: string[]): void {
-		console.log(f("Bold + Green", "[Bot] ", "Reset + White", ...args));
-	}
-
-	static info(...args: string[]): void {
-		console.log(f("Bold + Blue", "[Bot] ", "Reset + White", ...args));
-	}
-
-	static error(...args: string[]): void {
-		console.log(f("Bold + Red", "[Bot] ", "Reset + White", ...args));
-	}
-
-	// actual bot things
 
 	static processCommand(message: Message): void {
 		const text = message.content;
@@ -50,11 +32,15 @@ export default class Bot { // thank god for static methods or this would be a pl
 		CommandHandler.run(command);
 	}
 
-	static setClient(client: Client): void {
-		this.client = client;
+	static log(...args: string[]): void {
+		console.log(f("Bold + Green", "[Bot] ", "Reset + White", ...args));
 	}
 
-	static setConfig(config: BotConfig): void {
-		this.config = config;
+	static info(...args: string[]): void {
+		console.log(f("Bold + Blue", "[Bot] ", "Reset + White", ...args));
+	}
+
+	static error(...args: string[]): void {
+		console.log(f("Bold + Red", "[Bot] ", "Reset + White", ...args));
 	}
 }

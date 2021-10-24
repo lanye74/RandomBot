@@ -1,7 +1,6 @@
 import Bot from "./Bot.js";
-import {URL} from "url";
-
 import * as fs from "fs-extra";
+import {URL} from "url";
 // @ts-ignore
 const {readdirSync} = fs.default;
 
@@ -35,6 +34,13 @@ export default class CommandHandler {
 		return Promise.all(commandLoaders.map(loader => loader()));
 	}
 
+	static loadCommand(command: string): Promise<any> {
+		return new Promise(resolve => {
+			import(`./commands/${command}`)
+			.then(module => resolve(module));
+		});
+	}
+
 	static register(input: any | any[]) { // type checking is ridiculous because the type of a module is typeof import(module)
 		if(input instanceof Array) {
 			input.forEach(command => {
@@ -44,13 +50,6 @@ export default class CommandHandler {
 		} else {
 			this.commands[input.default.name] = input.default;
 		}
-	}
-
-	static loadCommand(command: string): Promise<any> {
-		return new Promise(resolve => {
-			import(`./commands/${command}`)
-			.then(module => resolve(module));
-		});
 	}
 
 	static run(command: MessageCommand): void {

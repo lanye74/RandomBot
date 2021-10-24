@@ -1,5 +1,5 @@
-import * as fs from "fs-extra";
 import Bot from "../Bot.js";
+import * as fs from "fs-extra";
 import RBCommand from "../RBCommand.js";
 // @ts-ignore
 const {existsSync, readFile, writeFile} = fs.default;
