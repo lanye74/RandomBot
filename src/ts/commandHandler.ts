@@ -54,14 +54,14 @@ export default class CommandHandler {
 	}
 
 	static run(command: MessageCommand): void {
-		const commandFunction: Function | undefined = this.commands[command.name];
+		const commandFunction: RBCommand | undefined = this.commands[command.name];
 
 
 		if(!commandFunction) {
 			command.channel.send("The command you're trying to use doesn't exist.");
 			return;
 		} else {
-			commandFunction(command);
+			commandFunction.run(command);
 		}
 	}
 }
