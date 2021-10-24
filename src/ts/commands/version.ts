@@ -1,14 +1,19 @@
 import * as fs from "fs-extra";
-//@ts-ignore
+import RBCommand from "../RBCommand.js";
+// @ts-ignore
 const {readFileSync} = fs.default;
 
-import type {Command} from "../types";
+import type {MessageCommand} from "../types";
 
 
 
-const botVersion = JSON.parse(readFileSync("./package.json")).version;
+export default class version extends RBCommand {
+	static botVersion = JSON.parse(readFileSync("./package.json")).version; // probably should be moved to the Bot class
+	static description = "Returns the current bot version.";
+	static friendlyName = "Version";
+	static usage = "version";
 
-
-export default function version(command: Command): void {
-	command.channel.send(`Current bot version: ${botVersion}`);
+	static run(command: MessageCommand) {
+		command.channel.send(`Current bot version: ${this.botVersion}`);
+	}
 }

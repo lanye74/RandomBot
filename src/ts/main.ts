@@ -1,30 +1,26 @@
-import { debug } from "console";
+import Bot from "./Bot.js";
+import CommandHandler from "./CommandHandler.js";
 import * as Discord from "discord.js";
 import * as fs from "fs-extra";
 // @ts-ignore
 const {readFileSync} = fs.default;
 
-import Bot from "./Bot.js";
-import CommandHandler from "./CommandHandler.js";
 
 
+Bot.config = JSON.parse(readFileSync("./config.json", {encoding: "utf8"}));
 
-Bot.setConfig(
-	JSON.parse(
-		readFileSync("./config.json", {encoding: "utf8"})
-	)
-);
-
-Bot.setClient(new Discord.Client());
-Bot.client.login(Bot.config.token);
+Bot.client = new Discord.Client();
 
 
-CommandHandler.init();
+CommandHandler.loadCommands()
+.then(commands => CommandHandler.register(commands))
+.then(() => Bot.info("Commands loaded successfully."))
+.then(() => Bot.client.login(Bot.config.token));
 
 
 
 Bot.client.on("ready", () => {
-	Bot.log("Ready!");
+	Bot.log("", "Bold", "Ready.");
 
 	Bot.client.user!.setActivity(`${Bot.config.prefix}help`, {type: "LISTENING"});
 
@@ -35,8 +31,6 @@ Bot.client.on("ready", () => {
 
 
 function handleMessage(message: Discord.Message) {
-	debugger;
-
 	if(!message.content.startsWith(Bot.config.prefix) ||
 		!message.guild ||
 		!message.guild!.available ||

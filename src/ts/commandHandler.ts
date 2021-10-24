@@ -1,47 +1,66 @@
 import Bot from "./Bot.js";
-import {URL} from "url";
-
 import * as fs from "fs-extra";
-//@ts-ignore
+import {URL} from "url";
+// @ts-ignore
 const {readdirSync} = fs.default;
 
-import type {Command} from "./types.js";
+import type {MessageCommand} from "./types.js";
+import type RBCommand from "./RBCommand.js";
 
 
 
 export default class CommandHandler {
-	static commands: {[name: string]: Function} = {};
+	static commands: {[name: string]: RBCommand} = {};
 
-	static init(): void {
-		Bot.info("Loading commands...");
+	static loadCommands(): Promise<any> {
+		const commandLoaders: Function[] = [];
+
 
 		const target = (new URL("./commands/", import.meta.url).pathname).slice(1); // slice removes the prefixed /
 
 		const commands: string[] = readdirSync(target)
-			.filter((file: string) => file.split(".")[1] === "js") // only the ones that are js files
-			.map((file: string) => file = file.slice(0, file.length - 3)); // cut to names without extensions
+		.filter((file: string) => file.split(".")[1] === "js"); // only the ones that are js files
 
-		
-		let counter = 0;
-		
-		commands.forEach(async command => {
-			const module = await import(`./commands/${command}.js`);
-			
-			this.commands[command] = module.default;
-			
-			Bot.info(`(${++counter}/${commands.length}) Loaded command ${command}.`);
+
+		Bot.info("Loading commands...");
+
+
+		commands.forEach(command => {
+			commandLoaders.push(() => this.loadCommand(command));
+		});
+
+
+
+		return Promise.all(commandLoaders.map(loader => loader()));
+	}
+
+	static loadCommand(command: string): Promise<any> {
+		return new Promise(resolve => {
+			import(`./commands/${command}`)
+			.then(module => resolve(module));
 		});
 	}
-	
-	static run(command: Command): void {
-		const commandFunction: Function | undefined = this.commands[command.name];
+
+	static register(input: any | any[]) { // type checking is ridiculous because the type of a module is typeof import(module)
+		if(input instanceof Array) {
+			input.forEach(command => {
+				// Bot.info(`(${number}/${commands.length}) Loaded ${command.default.name}.`);
+				this.commands[command.default.name] = command.default;
+			});
+		} else {
+			this.commands[input.default.name] = input.default;
+		}
+	}
+
+	static run(command: MessageCommand): void {
+		const commandFunction: RBCommand | undefined = this.commands[command.name];
 
 
 		if(!commandFunction) {
 			command.channel.send("The command you're trying to use doesn't exist.");
 			return;
 		} else {
-			commandFunction(command);
+			commandFunction.run(command);
 		}
 	}
 }

@@ -1,29 +1,50 @@
-import {MessageEmbed} from "discord.js";
 import Bot from "../Bot.js";
+import CommandHandler from "../CommandHandler.js";
+import {MessageEmbed} from "discord.js";
+import RBCommand from "../RBCommand.js";
 
-import type {Command} from "../types.js";
+import type {MessageCommand} from "../types.js";
 
 
 
-export default function help(command: Command): void {
-	const embed = new MessageEmbed();
-	const {prefix} = Bot.config;
+export default class help extends RBCommand {
+	static description = "Lists all commands, or shows information about a specific command.";
+	static friendlyName = "Help";
+	static usage = "help <optional command name>";
 
-	embed.setColor("#7b42f5");
-	
-	embed.setTitle("help commands for lanye's utilities");
+	static run(command: MessageCommand): void {
+		const {args, channel} = command;
 
-	embed.setDescription(`${prefix}help | this command
-	${prefix}ping | get the latency of the bot and the discord API
+		const embed = new MessageEmbed();
+		embed.setColor("#7b42f5");
 
-	${prefix}kick [mention user] <optional reason> | kicks a user
-	${prefix}ban [mention user] <optional days> <optional reason> | bans a user
-	
-	${prefix}suspendRole [role ID] | removes the inputted role from all users and stores it; e.g. if you input a member role, it will remove the member role from all users with it and then that role can be later returned
-	${prefix}releaseRole [message ID] | used to return a role that was revoked using \`suspendRole\` -- use it by inputting the message ID in which you invoked \`suspendRole\`
+		if(!args[0]) { // general help command
+			embed.setTitle("Commands for Lanye's Utilities");
 
-	${prefix}spamPing [mention user] <amount> <optional reason> | funny command go brrrrr
-	`);
+			let text = "";
 
-	command.channel.send(embed);
+			Object.values(CommandHandler.commands).forEach((command: RBCommand) => {
+				// @ts-ignore -- yes, command.name does exist
+				text += `${command.name} | ${command.description}\n`;
+			});
+
+			embed.setDescription(text.trim());
+
+			embed.setFooter(`Use "${Bot.config.prefix}help <command>" to see information on a specific command`);
+		} else {
+			const command = CommandHandler.commands[args[0]];
+
+
+			if(!command) {
+				channel.send("The command you're looking for doesn't exist.");
+				return;
+			}
+
+			embed.setTitle(command.friendlyName);
+
+			embed.setDescription(`${command.description}\n\nUsage: \`${Bot.config.prefix}${command.usage}\``);
+		}
+
+		channel.send(embed);
+	}
 }
