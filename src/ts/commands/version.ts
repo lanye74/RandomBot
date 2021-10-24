@@ -1,6 +1,6 @@
 import RBCommand from "../RBCommand.js";
 import * as fs from "fs-extra";
-//@ts-ignore
+// @ts-ignore
 const {readFileSync} = fs.default;
 
 import type {MessageCommand} from "../types";

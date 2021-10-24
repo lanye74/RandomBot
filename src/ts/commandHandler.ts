@@ -2,15 +2,16 @@ import Bot from "./Bot.js";
 import {URL} from "url";
 
 import * as fs from "fs-extra";
-//@ts-ignore
+// @ts-ignore
 const {readdirSync} = fs.default;
 
 import type {MessageCommand} from "./types.js";
+import type RBCommand from "./RBCommand.js";
 
 
 
 export default class CommandHandler {
-	static commands: {[name: string]: Function} = {};
+	static commands: {[name: string]: RBCommand} = {};
 
 	static loadCommands(): Promise<any> {
 		const commandLoaders: Function[] = [];
