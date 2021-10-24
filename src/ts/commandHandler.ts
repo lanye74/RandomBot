@@ -14,14 +14,14 @@ export default class CommandHandler {
 
 	static loadCommands(): Promise<any> {
 		const commandLoaders: Function[] = [];
-		
+
 
 		const target = (new URL("./commands/", import.meta.url).pathname).slice(1); // slice removes the prefixed /
-		
+
 		const commands: string[] = readdirSync(target)
 		.filter((file: string) => file.split(".")[1] === "js"); // only the ones that are js files
 
-		
+
 		Bot.info("Loading commands...");
 
 
@@ -44,14 +44,14 @@ export default class CommandHandler {
 			this.commands[input.default.name] = input.default;
 		}
 	}
-	
+
 	static loadCommand(command: string): Promise<any> {
 		return new Promise(resolve => {
 			import(`./commands/${command}`)
 			.then(module => resolve(module));
 		});
 	}
-	
+
 	static run(command: MessageCommand): void {
 		const commandFunction: Function | undefined = this.commands[command.name];
 

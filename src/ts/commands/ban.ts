@@ -79,7 +79,7 @@ export default class ban extends RBCommand {
 
 		const invokerRolesArray = Array.from(invokerRolesMap.values());
 		const targetRolesArray = Array.from(targetRolesMap.values());
-		
+
 		invokerRolesArray.sort((roleA, roleB) => roleB.position - roleA.position); // sort by descending roles
 		targetRolesArray.sort((roleA, roleB) => roleB.position - roleA.position);
 

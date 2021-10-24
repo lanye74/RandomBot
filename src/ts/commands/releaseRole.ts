@@ -27,7 +27,7 @@ export default async function releaseRole(command: MessageCommand): Promise<void
 	}
 
 	const json = JSON.parse(readFileSync("./db.json", {encoding: "utf8"}));
-	
+
 	if(!json.servers[guild.id]) {
 		channel.send("This server has no saves.")
 	}
@@ -70,6 +70,6 @@ export default async function releaseRole(command: MessageCommand): Promise<void
 		member.roles.add(role);
 	});
 
-	
+
 	channel.send("Successfully returned the role.");
 }

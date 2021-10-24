@@ -1,4 +1,4 @@
-import RBCommand from "../RBCommand";
+import RBCommand from "../RBCommand.js";
 import * as fs from "fs-extra";
 //@ts-ignore
 const {readFileSync} = fs.default;

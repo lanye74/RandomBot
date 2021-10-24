@@ -34,7 +34,7 @@ export default async function suspendRole(command: MessageCommand): Promise<void
 	// that isn't good enough, so let's check every member for the role because I hate myself lmao
 
 	const members = await guild.members.fetch();
-	
+
 	if(members.size === 0) {
 		channel.send("No one has this role.");
 		return;
@@ -44,7 +44,7 @@ export default async function suspendRole(command: MessageCommand): Promise<void
 	members.forEach(member => {
 		if(member.roles.cache.has(role.id)) {
 			member.roles.remove(role);
-		
+
 			saveData += `${member.id}\n`;
 		}
 	});
