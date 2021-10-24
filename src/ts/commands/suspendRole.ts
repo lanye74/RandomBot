@@ -2,11 +2,11 @@ import * as fs from "fs-extra";
 // @ts-ignore
 const {existsSync, createFileSync, readFileSync, writeFileSync} = fs.default;
 
-import type {Command} from "../types.js";
+import type {MessageCommand} from "../types.js";
 
 
 
-export default async function suspendRole(command: Command): Promise<void> {
+export default async function suspendRole(command: MessageCommand): Promise<void> {
 	const {args, channel, message, sender, guild} = command;
 	let saveData = "";
 

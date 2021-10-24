@@ -5,7 +5,7 @@ import * as fs from "fs-extra";
 //@ts-ignore
 const {readdirSync} = fs.default;
 
-import type {Command} from "./types.js";
+import type {MessageCommand} from "./types.js";
 
 
 
@@ -52,7 +52,7 @@ export default class CommandHandler {
 		});
 	}
 	
-	static run(command: Command): void {
+	static run(command: MessageCommand): void {
 		const commandFunction: Function | undefined = this.commands[command.name];
 
 

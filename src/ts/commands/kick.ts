@@ -1,8 +1,8 @@
-import type {Command} from "../types.js";
+import type {MessageCommand} from "../types.js";
 
 
 
-export default async function kick(command: Command): Promise<void> {
+export default async function kick(command: MessageCommand): Promise<void> {
 	const {args, channel, guild, mentions, sender} = command;
 	
 	const targetID = mentions[0].id;

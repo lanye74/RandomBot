@@ -3,11 +3,11 @@ import Bot from "../Bot.js";
 // @ts-ignore
 const {existsSync, readFileSync, writeFileSync} = fs.default;
 
-import type {Command} from "../types.js";
+import type {MessageCommand} from "../types.js";
 
 
 
-export default async function releaseRole(command: Command): Promise<void> {
+export default async function releaseRole(command: MessageCommand): Promise<void> {
 	const {args, channel, sender, guild} = command;
 
 

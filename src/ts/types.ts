@@ -9,7 +9,7 @@ export type BotConfig = {
 
 
 
-export type Command = {
+export type MessageCommand = {
 	args: string[],
 	channel: TextChannel,
 	client: Client,

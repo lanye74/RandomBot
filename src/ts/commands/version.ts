@@ -2,13 +2,13 @@ import * as fs from "fs-extra";
 //@ts-ignore
 const {readFileSync} = fs.default;
 
-import type {Command} from "../types";
+import type {MessageCommand} from "../types";
 
 
 
 const botVersion = JSON.parse(readFileSync("./package.json")).version;
 
 
-export default function version(command: Command): void {
+export default function version(command: MessageCommand): void {
 	command.channel.send(`Current bot version: ${botVersion}`);
 }

@@ -1,5 +1,5 @@
 import type {Message, Client, TextChannel} from "discord.js";
-import type {BotConfig, Command} from "./types.js";
+import type {BotConfig, MessageCommand} from "./types.js";
 
 import CommandHandler from "./CommandHandler.js";
 import f from "./util/console.js";
@@ -35,7 +35,7 @@ export default class Bot { // thank god for static methods or this would be a pl
 		const commandSegments = inputString.trim().split(" ");
 
 
-		const command: Command = {
+		const command: MessageCommand = {
 			args: commandSegments.slice(1), // all but first (command type)
 			channel: <TextChannel>message.channel,
 			client: this.client,

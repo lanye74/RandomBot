@@ -1,11 +1,11 @@
 import {MessageEmbed} from "discord.js";
 import Bot from "../Bot.js";
 
-import type {Command} from "../types.js";
+import type {MessageCommand} from "../types.js";
 
 
 
-export default function help(command: Command): void {
+export default function help(command: MessageCommand): void {
 	const embed = new MessageEmbed();
 	const {prefix} = Bot.config;
 

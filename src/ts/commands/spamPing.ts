@@ -1,10 +1,10 @@
 import sleep from "../util/sleep.js";
 
-import type {Command} from "../types.js";
+import type {MessageCommand} from "../types.js";
 
 
 
-export default async function spamPing(command: Command): Promise<void> {
+export default async function spamPing(command: MessageCommand): Promise<void> {
 	const {args, channel, mentions} = command;
 
 	const who = mentions[0];

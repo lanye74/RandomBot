@@ -1,11 +1,11 @@
 import Bot from "../Bot.js";
 
 import type {BanOptions} from "discord.js";
-import type {Command} from "../types.js";
+import type {MessageCommand} from "../types.js";
 
 
 
-export default async function ban(command: Command): Promise<void> {
+export default async function ban(command: MessageCommand): Promise<void> {
 	const {args, channel, guild, mentions, sender} = command;
 
 	const banOptions: BanOptions = {
