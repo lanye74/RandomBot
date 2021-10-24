@@ -6,8 +6,9 @@ import type {MessageCommand} from "../types.js";
 
 
 export default class ban extends RBCommand {
-	static description = `Bans a user.\n\nUsage:\`${this.prefix}ban [mention user] <optional days of messages to clear> <optional reason>\``;
+	static description = "Bans a user.";
 	static friendlyName = "Ban";
+	static usage = "ban [mention user] <optional days of messages to clear> <optional reason>";
 
 	static async run(command: MessageCommand): Promise<void> {
 		const {args, channel, guild, mentions, sender} = command;

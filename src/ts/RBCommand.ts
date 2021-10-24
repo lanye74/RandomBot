@@ -4,7 +4,8 @@ import Bot from "./Bot.js";
 
 export default class RBCommand {
 	description: string = "Placeholder description";
-	friendlyName: string = "Base Command";
+	friendlyName: string = "Placeholder name";
+	usage: string = "Placeholder usage";
 
 	protected static prefix = Bot.config.prefix;
 

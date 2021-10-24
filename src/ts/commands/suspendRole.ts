@@ -8,8 +8,9 @@ import type {MessageCommand} from "../types.js";
 
 
 export default class suspendRole extends RBCommand {
-	static description = `Removes the inputted role from all users and stores it to be later returned.\n\nUsage: \`${this.prefix}suspendRole <role ID>\``;
+	static description = "Removes the inputted role from all users and stores it to be later returned.";
 	static friendlyName = "Suspend Role";
+	static usage = "suspendRole <role ID>";
 
 	static async run(command: MessageCommand): Promise<void> {
 		const {args, channel, message, sender, guild} = command;
@@ -25,7 +26,6 @@ export default class suspendRole extends RBCommand {
 		}
 
 
-
 		const role = await guild.roles.fetch(args[0]);
 
 		if(!role) {
@@ -39,11 +39,6 @@ export default class suspendRole extends RBCommand {
 		// that isn't good enough, so let's check every member for the role because I hate myself lmao
 
 		const members = await guild.members.fetch();
-
-		if(members.size === 0) {
-			channel.send("No one has this role.");
-			return;
-		}
 
 
 		members.forEach(member => {
@@ -68,7 +63,7 @@ export default class suspendRole extends RBCommand {
 
 		if(!existsSync("./db.json")) {
 			await createFile("./db.json");
-			await writeFile("./db.json", `{"servers": {}}`);
+			await writeFile("./db.json", "{\"servers\": {}}");
 		}
 
 

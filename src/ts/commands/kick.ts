@@ -5,8 +5,9 @@ import type {MessageCommand} from "../types.js";
 
 
 export default class kick extends RBCommand {
-	static description = `Kicks a user.\n\nUsage:\`${this.prefix}kick [mention user] <optional reason>\``;
+	static description = "Kicks a user.";
 	static friendlyName = "Kick";
+	static usage = "kick [mention user] <optional reason>";
 
 	static async run(command: MessageCommand): Promise<void> {
 		const {args, channel, guild, mentions, sender} = command;

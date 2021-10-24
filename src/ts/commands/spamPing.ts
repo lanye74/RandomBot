@@ -7,8 +7,9 @@ import type {TextChannel} from "discord.js";
 
 
 export default class spamPing extends RBCommand {
-	static description = `Spam ping a user.\n\nUsage:\`${this.prefix}spamPing [mention user] <how many times> <optional text>\``;
+	static description = "Spam ping a user.";
 	static friendlyName = "Spam Ping";
+	static usage = "spamPing [mention user] <how many times> <optional text>";
 
 	private static queue: [string, number][] = [];
 

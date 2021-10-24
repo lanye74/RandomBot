@@ -9,8 +9,9 @@ import type {MessageCommand} from "../types";
 
 export default class version extends RBCommand {
 	static botVersion = JSON.parse(readFileSync("./package.json")).version; // probably should be moved to the Bot class
-	static description = `Returns the current bot version.\n\nUsage: \`${this.prefix}version\``;
+	static description = "Returns the current bot version.";
 	static friendlyName = "Version";
+	static usage = "version";
 
 	static run(command: MessageCommand) {
 		command.channel.send(`Current bot version: ${this.botVersion}`);

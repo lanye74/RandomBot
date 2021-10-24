@@ -9,8 +9,9 @@ import type {MessageCommand} from "../types.js";
 
 
 export default class releaseRole extends RBCommand {
-	static description = `Returns a previously stored role to the members who had it.\n\nUsage: \`${this.prefix}releaseRole <message ID that suspendRole was invoked in>\``;
+	static description = "Returns a previously stored role to the members who had it.";
 	static friendlyName = "Release Role";
+	static usage = "releaseRole <message ID that suspendRole was invoked in>";
 
 	static async run(command: MessageCommand): Promise<void> {
 		const {args, channel, sender, guild} = command;
