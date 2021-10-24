@@ -13,23 +13,38 @@ export default class CommandHandler {
 	static commands: {[name: string]: Function} = {};
 
 	static init(): void {
-		Bot.info("Loading commands...");
+		const commandLoaders: Function[] = [];
+		
 
 		const target = (new URL("./commands/", import.meta.url).pathname).slice(1); // slice removes the prefixed /
-
+		
 		const commands: string[] = readdirSync(target)
-			.filter((file: string) => file.split(".")[1] === "js") // only the ones that are js files
-			.map((file: string) => file = file.slice(0, file.length - 3)); // cut to names without extensions
+		.filter((file: string) => file.split(".")[1] === "js"); // only the ones that are js files
 
 		
-		let counter = 0;
-		
-		commands.forEach(async command => {
-			const module = await import(`./commands/${command}.js`);
-			
-			this.commands[command] = module.default;
-			
-			Bot.info(`(${++counter}/${commands.length}) Loaded command ${command}.`);
+		Bot.info("Loading commands...");
+
+
+		commands.forEach(command => {
+			commandLoaders.push(() => this.loadCommand(command));
+		});
+
+
+
+		Promise.all(commandLoaders.map(loader => loader()))
+		.then(commands => {
+			commands.forEach((command, _number) => {
+				// Bot.info(`(${number}/${commands.length}) Loaded ${command.default.name}.`);
+				this.commands[command.default.name] = command.default;
+			});
+		})
+		.then(() => Bot.info("Commands loaded successfully."));
+	}
+
+	static loadCommand(command: string): Promise<any> {
+		return new Promise(resolve => {
+			import(`./commands/${command}`)
+			.then(module => resolve(module));
 		});
 	}
 	
