@@ -1,8 +1,8 @@
 import Bot from "./Bot.js";
-import * as fs from "fs-extra";
+import * as fs_bad from "fs-extra";
 import {URL} from "url";
 // @ts-ignore
-const {readdirSync} = fs.default;
+const fs = fs_bad.default;
 
 import type {MessageCommand} from "./types.js";
 import type RBCommand from "./RBCommand.js";
@@ -18,7 +18,7 @@ export default class CommandHandler {
 
 		const target = (new URL("./commands/", import.meta.url).pathname).slice(1); // slice removes the prefixed /
 
-		const commands: string[] = readdirSync(target)
+		const commands: string[] = fs.readdirSync(target)
 		.filter((file: string) => file.split(".")[1] === "js"); // only the ones that are js files
 
 

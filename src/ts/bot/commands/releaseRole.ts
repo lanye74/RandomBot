@@ -1,8 +1,8 @@
 import Bot from "../Bot.js";
-import * as fs from "fs-extra";
+import * as fs_bad from "fs-extra";
 import RBCommand from "../RBCommand.js";
 // @ts-ignore
-const {existsSync, readFile, writeFile} = fs.default;
+const fs = fs_bad.default;
 
 import type {MessageCommand} from "../types.js";
 
@@ -27,13 +27,13 @@ export default class releaseRole extends RBCommand {
 
 
 
-		if(!existsSync("./db.json")) {
+		if(!fs.existsSync("./db.json")) {
 			channel.send(`Please run \`${Bot.config.prefix}suspendRole\` at least once to initialize the database.`);
 			return;
 		}
 
 
-		const json = await readFile("./db.json", {encoding: "utf8"}).then((file: string) => {return JSON.parse(file)});
+		const json = await fs.readFile("./db.json", {encoding: "utf8"}).then((file: string) => {return JSON.parse(file)});
 
 		if(!json.servers[guild.id]) {
 			channel.send("This server has no saves.")
@@ -54,7 +54,7 @@ export default class releaseRole extends RBCommand {
 
 
 		const newJSON = JSON.stringify(json, null, "\t");
-		await writeFile("./db.json", newJSON);
+		await fs.writeFile("./db.json", newJSON);
 
 
 		const saveData = saveDataCompressed.split("\n");

@@ -1,7 +1,7 @@
-import * as fs from "fs-extra";
+import * as fs_bad from "fs-extra";
 import RBCommand from "../RBCommand.js";
 // @ts-ignore
-const {createFile, existsSync, readFile, writeFile} = fs.default;
+const fs = fs_bad.default;
 
 import type {MessageCommand} from "../types.js";
 
@@ -61,13 +61,13 @@ export default class suspendRole extends RBCommand {
 		const saveName = message.id;
 
 
-		if(!existsSync("./db.json")) {
-			await createFile("./db.json");
-			await writeFile("./db.json", "{\"servers\": {}}");
+		if(!fs.existsSync("./db.json")) {
+			await fs.createFile("./db.json");
+			await fs.writeFile("./db.json", "{\"servers\": {}}");
 		}
 
 
-		const json = await readFile("./db.json", {encoding: "utf8"}).then((file: string) => {return JSON.parse(file)});
+		const json = await fs.readFile("./db.json", {encoding: "utf8"}).then((file: string) => {return JSON.parse(file)});
 
 		if(!json.servers[guild.id]) {
 			json.servers[guild.id] = {roleSaves: {}};
@@ -77,7 +77,7 @@ export default class suspendRole extends RBCommand {
 
 		const newJSON = JSON.stringify(json, null, "\t");
 
-		await writeFile("./db.json", newJSON);
+		await fs.writeFile("./db.json", newJSON);
 
 
 		channel.send(`Successfully stored roles away as the message ID of the command (\`${saveName}\`).`);
