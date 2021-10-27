@@ -11,7 +11,7 @@ export default class spamPing extends RBCommand {
 	static friendlyName = "Spam Ping";
 	static usage = "spamPing [mention user] <how many times> <optional text>";
 
-	private static queue: [string, number][] = [];
+	private static queue: [string, number, TextChannel][] = [];
 	private static pinging: boolean = false;
 
 	static async run(command: MessageCommand): Promise<void> {
@@ -31,16 +31,17 @@ export default class spamPing extends RBCommand {
 			return;
 		}
 
+		this.queue.push([`<@${who.id}> ${text}`, howMany, channel]);
 
 		if(this.queue.length === 0 && !this.pinging) {
-			this.spamPing(`<@${who.id}> ${text}`, howMany, channel);
-		} else {
-			this.queue.push([`<@${who.id}> ${text}`, howMany]);
+			this.spamPing();
 		}
 	}
 
-	private static async spamPing(spamString: string, howMany: number, channel: TextChannel): Promise<void> {
+	private static async spamPing(): Promise<void> {
 		this.pinging = true;
+
+		const [spamString, howMany, channel] = this.queue.shift()!;
 
 		for(let i = 0; i < howMany; i++) {
 			channel.send(spamString);
@@ -54,8 +55,6 @@ export default class spamPing extends RBCommand {
 			return;
 		}
 
-		const toSpam = this.queue.shift()!;
-
-		this.spamPing(toSpam[0], toSpam[1], channel);
+		this.spamPing();
 	}
 }

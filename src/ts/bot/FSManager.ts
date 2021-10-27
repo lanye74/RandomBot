@@ -4,19 +4,35 @@ const fs = fs_bad.default;
 
 
 
+type FSOperation = "read" | "write";
+
+
 export default class FSManager {
-	private static queue: Function[] = [];
+	private static queue: [Promise<any>, FSOperation, ...any][] = [];
+	private static operating: boolean = false;
 
-	static async write(to: string, what: any): Promise<void> {
-		// uhhh
+	// if the read is intended to have a write follow up, protect the file until write is called with id
+	static async read(what: string, writeIntent: string = "0"): Promise<void> {
+		const promise = new Promise((res, rej) => {});
+		const intent = (writeIntent !== "0") ? parseInt(writeIntent) : 0;
 
-		return new Promise(resolve => {
-			// resolves only once processed in FSManager.process?
-		});
+		const args: [Promise<any>, FSOperation, ...any] = [promise, "read", what];
+		if(intent) args.push(intent); // this is complete ass but ok
+
+		this.queue.push(args);
+
+
+		if(this.queue.length === 1 && !this.operating) {
+			this.process();
+		}
+
+		return this.queue[this.queue.length - 1][0];
 	}
 
 	private static async process(): Promise<void> {
+		this.operating = true;
 
+		const object = this.queue.shift();
 	}
 }
 
