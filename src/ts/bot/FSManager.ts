@@ -4,15 +4,26 @@ const fs = fs_bad.default;
 
 
 
-type FSPromise = {promise: Promise<any>, resolve: Function, reject: Function};
-type FSManagerObject = [FSPromise, string, string, ...any];
+type FSPromise = {
+	promise: Promise<any>,
+	resolve: Function,
+	reject: Function
+};
+
+type FSTask = {
+	promise: FSPromise,
+	operation: string,
+	path: string,
+	protectFile: boolean,
+	data?: any[]
+};
 
 
 
 function createFSPromise(): FSPromise {
-	let resolve: Function, reject: Function;
+	let resolve, reject;
 
-	const promise = new Promise((pResolve: Function, pReject: Function) => {
+	const promise = new Promise((pResolve, pReject) => {
 		resolve = pResolve;
 		reject = pReject;
 	});
@@ -29,11 +40,14 @@ function createFSPromise(): FSPromise {
 
 
 export default class FSManager {
-	private static queue: FSManagerObject[] = [];
+	private static queue: FSTask[] = [];
 	private static operating: boolean = false;
 
+	private static protectedFiles: string[] = [];
+	private static haltedQueue: FSTask[] = []; // holds tasks that are waiting to write to a protected file
+
 	// if the read is intended to have a write follow up, protect the file until write is called with id
-	static async read(what: string, writeIntent: string = "0"): Promise<void> {
+	static async read(what: string, writeIntent: boolean): Promise<void> {
 		// const promise = new Promise((res, rej) => {});
 		// const intent = (writeIntent !== "0") ? parseInt(writeIntent) : 0;
 
@@ -48,6 +62,21 @@ export default class FSManager {
 		// }
 
 		// return this.queue[this.queue.length - 1][0];
+
+		const promise = createFSPromise();
+
+		this.queue.push(<FSTask>{
+			promise,
+			operation: "read",
+			path: what,
+			protectFile: writeIntent
+		});
+
+		if(this.queue.length === 1 && !this.operating) {
+			this.process();
+		}
+
+		return this.queue[this.queue.length - 1].promise.promise;
 	}
 
 	private static async process(): Promise<void> {
