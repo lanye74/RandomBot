@@ -51,9 +51,7 @@ export default class spamPing extends RBCommand {
 		this.pinging = false;
 
 
-		if(this.queue.length === 0) {
-			return;
-		}
+		if(this.queue.length === 0) return;
 
 		this.spamPing();
 	}
