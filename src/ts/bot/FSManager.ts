@@ -14,8 +14,8 @@ type FSTask = {
 	promise: FSPromise,
 	operation: string,
 	path: string,
-	protectFile: boolean,
-	data?: any[]
+	protectFile: number,
+	data: any[]
 };
 
 
@@ -44,17 +44,20 @@ export default class FSManager {
 	private static operating: boolean = false;
 
 	private static protectedFiles: string[] = [];
+	private static protectID: number = 0;
 	private static haltedQueue: FSTask[] = []; // holds tasks that are waiting to write to a protected file
 
+
 	// if the read is intended to have a write follow up, protect the file until write is called with id
-	static async read(what: string, writeIntent: boolean): Promise<void> {
+	static async read(what: string, writeIntent: number): Promise<void> {
 		const promise = createFSPromise();
 
 		this.queue.push(<FSTask>{
 			promise,
 			operation: "read",
 			path: what,
-			protectFile: writeIntent
+			protectFile: writeIntent,
+			data: []
 		});
 
 		if(this.queue.length === 1 && !this.operating) {
@@ -64,16 +67,20 @@ export default class FSManager {
 		return this.queue[this.queue.length - 1].promise.promise;
 	}
 
+	static generateProtectiveID(): number {
+		return ++this.protectID;
+	}
+
 	private static async process(): Promise<void> {
 		this.operating = true;
 
 		const object = this.queue.shift();
 
-		const {promise, operation, path, protectFile, ...data} = object!;
-		const method = fs[operation];
+		const {promise, operation, path, protectFile, data} = object!;
+		const method: Function = fs[operation];
 
 
-		const output = await method(path);
+		const output = await method.apply(null, [path, ...data]);
 
 		if(output) {
 			promise.resolve(output);
