@@ -36,7 +36,7 @@ export default class releaseRole extends RBCommand {
 		const json = await fs.readFile("./db.json", {encoding: "utf8"}).then((file: string) => {return JSON.parse(file)});
 
 		if(!json.servers[guild.id]) {
-			channel.send("This server has no saves.")
+			channel.send("This server has no saves.");
 		}
 
 		const saveLookup = args[0];

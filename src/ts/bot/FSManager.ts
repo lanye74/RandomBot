@@ -1,4 +1,5 @@
 import * as fs_bad from "fs-extra";
+import * as path from "path";
 import getCallerFile from "./util/getCallerFile.js";
 // @ts-ignore
 const fs = fs_bad.default;
@@ -45,19 +46,22 @@ export default class FSManager {
 	private static queue: FSTask[] = [];
 	private static operating: boolean = false;
 
+	private static thisPath = import.meta.url.split("/");
+	private static basePath = this.thisPath.slice(3, this.thisPath.length - 4).join("/"); // cuts off the file:/// and backtracks from src/js/bot/FSManager.ts
+
 	private static protectedFiles: Map<string, number> = new Map();
 	private static haltedQueue: FSTask[] = []; // holds tasks that are waiting to write to a protected file
 	private static protectID: number = 0;
 
 
 	// if the read is intended to have a write follow up, protect the file until write is called with id
-	static async read(what: string, writeIntent: number): Promise<void> {
+	static async read(pathToRead: string, writeIntent: number): Promise<void> {
 		const promise = createFSPromise();
 
 		this.queue.push(<FSTask>{
 			promise,
 			operation: "read",
-			path: what,
+			path: path.join(this.basePath, pathToRead), // this needs to be an absolute path
 			invoker: getCallerFile(),
 			protectFile: writeIntent,
 			data: []
@@ -85,29 +89,36 @@ export default class FSManager {
 
 		// time to handle path protection
 
+		if(this.protectedFiles.has(path) && !(this.protectedFiles.get(path) === protectFile)) {
+			this.haltedQueue.push(object!);
+
+			if(this.queue.length === 0) return;
+
+			this.process();
+		}
+
+		if(this.protectedFiles.has(path) && this.protectedFiles.get(path) === protectFile) {
+			this.protectedFiles.delete(path);
+
+			this.queue.push(...this.haltedQueue.filter(task => task.path === path));
+			this.haltedQueue = this.haltedQueue.filter(task => task.path !== path);
+		}
 
 
+		const output = await method.apply(null, [path, ...data]);
+
+		if(output) {
+			promise.resolve(output);
+		} else {
+			promise.resolve();
+		}
+
+		this.operating = false;
 
 
-		// if(!protectFile && this.protectedFiles.has(path)) {
+		if(this.queue.length === 0) return;
 
-		// }
-
-
-		// const output = await method.apply(null, [path, ...data]);
-
-		// if(output) {
-		// 	promise.resolve(output);
-		// } else {
-		// 	promise.resolve();
-		// }
-
-		// this.operating = false;
-
-
-		// if(this.queue.length === 0) return;
-
-		// this.process();
+		this.process();
 	}
 }
 
