@@ -41,7 +41,7 @@ function createFSPromise(): FSPromise {
 
 
 export default class FSManager {
-	private static queue: FSTask[] = [];
+	static queue: FSTask[] = [];
 	private static operating: boolean = false;
 
 	private static thisPath = import.meta.url.split("/");
@@ -93,7 +93,7 @@ export default class FSManager {
 		return ++this.protectID;
 	}
 
-	private static async process(): Promise<void> {
+	static async process(): Promise<void> {
 		this.operating = true;
 
 		const object = this.queue.shift();
@@ -119,10 +119,13 @@ export default class FSManager {
 				this.queue.push(...this.haltedQueue.filter(task => task.path === path));
 				this.haltedQueue = this.haltedQueue.filter(task => task.path !== path);
 			}
+		} else {
+			this.protectedFiles.set(path, protectFile);
 		}
 
 
 		const output = await method.apply(null, [path, ...data]);
+
 
 		if(output) {
 			promise.resolve(output);
@@ -138,29 +141,3 @@ export default class FSManager {
 		this.process();
 	}
 }
-
-/*
-fsmanager.push(read call)
-.then(data)
-
-const data = await fsmanager.read(file) ?
-
-await fsmanager.write(data);
-
-
-does this work?
-
-(file)
-const n = await fsmanager.promise(data);
-
-(promise)
-queue.push(data);
-
-(queue resolver)
-data.resolve();
-
-(file)
-// continues
-
-
-*/
