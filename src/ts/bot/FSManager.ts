@@ -1,6 +1,5 @@
 import * as fs_bad from "fs-extra";
 import * as path from "path";
-import getCallerFile from "./util/getCallerFile.js";
 // @ts-ignore
 const fs = fs_bad.default;
 
@@ -16,7 +15,6 @@ type FSTask = {
 	promise: FSPromise,
 	operation: string,
 	path: string,
-	invoker: string,
 	protectFile: number,
 	data: any[]
 };
@@ -51,20 +49,37 @@ export default class FSManager {
 
 	private static protectedFiles: Map<string, number> = new Map();
 	private static haltedQueue: FSTask[] = []; // holds tasks that are waiting to write to a protected file
-	private static protectID: number = 0;
+	private static protectID: number = 1;
 
 
 	// if the read is intended to have a write follow up, protect the file until write is called with id
-	static async read(pathToRead: string, writeIntent: number): Promise<void> {
+	static async read(pathToRead: string, writeIntent: number = 0): Promise<void> {
 		const promise = createFSPromise();
 
 		this.queue.push(<FSTask>{
 			promise,
 			operation: "read",
 			path: path.join(this.basePath, pathToRead), // this needs to be an absolute path
-			invoker: getCallerFile(),
 			protectFile: writeIntent,
 			data: []
+		});
+
+		if(this.queue.length === 1 && !this.operating) {
+			this.process();
+		}
+
+		return this.queue[this.queue.length - 1].promise.promise;
+	}
+
+	static async write(pathToWrite: string, data: any[], writeResolved: number = 0): Promise<void> {
+		const promise = createFSPromise();
+
+		this.queue.push(<FSTask>{
+			promise,
+			operation: "write",
+			path: path.join(this.basePath, pathToWrite),
+			protectFile: writeResolved,
+			data
 		});
 
 		if(this.queue.length === 1 && !this.operating) {
@@ -89,19 +104,21 @@ export default class FSManager {
 
 		// time to handle path protection
 
-		if(this.protectedFiles.has(path) && !(this.protectedFiles.get(path) === protectFile)) {
-			this.haltedQueue.push(object!);
+		if(protectFile !== 0) {
+			if(this.protectedFiles.has(path) && !(this.protectedFiles.get(path) === protectFile)) {
+				this.haltedQueue.push(object!);
 
-			if(this.queue.length === 0) return;
+				if(this.queue.length === 0) return;
 
-			this.process();
-		}
+				this.process();
+			}
 
-		if(this.protectedFiles.has(path) && this.protectedFiles.get(path) === protectFile) {
-			this.protectedFiles.delete(path);
+			if(this.protectedFiles.has(path) && this.protectedFiles.get(path) === protectFile) {
+				this.protectedFiles.delete(path);
 
-			this.queue.push(...this.haltedQueue.filter(task => task.path === path));
-			this.haltedQueue = this.haltedQueue.filter(task => task.path !== path);
+				this.queue.push(...this.haltedQueue.filter(task => task.path === path));
+				this.haltedQueue = this.haltedQueue.filter(task => task.path !== path);
+			}
 		}
 
 
