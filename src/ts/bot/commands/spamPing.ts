@@ -21,6 +21,12 @@ export default class spamPing extends RBCommand {
 		const howMany = parseInt(args[1]);
 		const text = (args[2]) ? args.slice(2).join(" ") : "";
 
+
+		if(!who) {
+			channel.send("You didn't specify a person to ping.");
+			return;
+		}
+
 		if(isNaN(howMany)) {
 			channel.send("You didn't specify a valid number of times to ping.");
 			return;

@@ -1,4 +1,5 @@
 import * as fs_bad from "fs-extra";
+import getCallerFile from "./util/getCallerFile.js";
 // @ts-ignore
 const fs = fs_bad.default;
 
@@ -14,6 +15,7 @@ type FSTask = {
 	promise: FSPromise,
 	operation: string,
 	path: string,
+	invoker: string,
 	protectFile: number,
 	data: any[]
 };
@@ -43,9 +45,9 @@ export default class FSManager {
 	private static queue: FSTask[] = [];
 	private static operating: boolean = false;
 
-	private static protectedFiles: string[] = [];
-	private static protectID: number = 0;
+	private static protectedFiles: Map<string, number> = new Map();
 	private static haltedQueue: FSTask[] = []; // holds tasks that are waiting to write to a protected file
+	private static protectID: number = 0;
 
 
 	// if the read is intended to have a write follow up, protect the file until write is called with id
@@ -56,6 +58,7 @@ export default class FSManager {
 			promise,
 			operation: "read",
 			path: what,
+			invoker: getCallerFile(),
 			protectFile: writeIntent,
 			data: []
 		});
@@ -80,20 +83,31 @@ export default class FSManager {
 		const method: Function = fs[operation];
 
 
-		const output = await method.apply(null, [path, ...data]);
-
-		if(output) {
-			promise.resolve(output);
-		} else {
-			promise.resolve();
-		}
-
-		this.operating = false;
+		// time to handle path protection
 
 
-		if(this.queue.length === 0) return;
 
-		this.process();
+
+
+		// if(!protectFile && this.protectedFiles.has(path)) {
+
+		// }
+
+
+		// const output = await method.apply(null, [path, ...data]);
+
+		// if(output) {
+		// 	promise.resolve(output);
+		// } else {
+		// 	promise.resolve();
+		// }
+
+		// this.operating = false;
+
+
+		// if(this.queue.length === 0) return;
+
+		// this.process();
 	}
 }
 
