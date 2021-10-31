@@ -1,4 +1,5 @@
 import * as fs_bad from "fs-extra";
+import FSManager from "../FSManager.js";
 import RBCommand from "../RBCommand.js";
 // @ts-ignore
 const fs = fs_bad.default;
@@ -62,12 +63,13 @@ export default class suspendRole extends RBCommand {
 
 
 		if(!fs.existsSync("./db.json")) {
-			await fs.createFile("./db.json");
-			await fs.writeFile("./db.json", "{\"servers\": {}}");
+			await FSManager.write("./db.json", ["{\"servers\": {}"]);
 		}
 
 
-		const json = await fs.readFile("./db.json", {encoding: "utf8"}).then((file: string) => {return JSON.parse(file)});
+		const fileWriteID = FSManager.generateProtectiveID();
+
+		const json = await FSManager.read("./db.json", [{encoding: "utf8"}], fileWriteID).then((file: string) => JSON.parse(file));
 
 		if(!json.servers[guild.id]) {
 			json.servers[guild.id] = {roleSaves: {}};
@@ -76,8 +78,7 @@ export default class suspendRole extends RBCommand {
 		json.servers[guild.id].roleSaves[saveName] = saveData;
 
 		const newJSON = JSON.stringify(json, null, "\t");
-
-		await fs.writeFile("./db.json", newJSON);
+		await FSManager.write("./db.json", [newJSON], fileWriteID);
 
 
 		channel.send(`Successfully stored roles away as the message ID of the command (\`${saveName}\`).`);

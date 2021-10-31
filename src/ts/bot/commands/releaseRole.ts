@@ -5,6 +5,7 @@ import RBCommand from "../RBCommand.js";
 const fs = fs_bad.default;
 
 import type {MessageCommand} from "../types.js";
+import FSManager from "../FSManager.js";
 
 
 
@@ -33,7 +34,8 @@ export default class releaseRole extends RBCommand {
 		}
 
 
-		const json = await fs.readFile("./db.json", {encoding: "utf8"}).then((file: string) => {return JSON.parse(file)});
+		const fileWriteID = FSManager.generateProtectiveID();
+		const json = await FSManager.read("./db.json", [{encoding: "utf8"}], fileWriteID).then((file: string) => JSON.parse(file));
 
 		if(!json.servers[guild.id]) {
 			channel.send("This server has no saves.");
@@ -54,7 +56,7 @@ export default class releaseRole extends RBCommand {
 
 
 		const newJSON = JSON.stringify(json, null, "\t");
-		await fs.writeFile("./db.json", newJSON);
+		await FSManager.write("./db.json", [newJSON], fileWriteID);
 
 
 		const saveData = saveDataCompressed.split("\n");

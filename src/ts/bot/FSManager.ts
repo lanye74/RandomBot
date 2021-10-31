@@ -53,37 +53,37 @@ export default class FSManager {
 
 
 	// if the read is intended to have a write follow up, protect the file until write is called with id
-	static async read(pathToRead: string, writeIntent: number = 0): Promise<void> {
+	static async read(pathToRead: string, flags: any[] = [], writeIntent: number = 0): Promise<any> {
 		const promise = createFSPromise();
 
 		this.queue.push(<FSTask>{
 			promise,
-			operation: "read",
+			operation: "readFile",
 			path: path.join(this.basePath, pathToRead), // this needs to be an absolute path
 			protectFile: writeIntent,
-			data: []
+			data: flags
 		});
 
 		if(this.queue.length === 1 && !this.operating) {
-			this.process();
+			setTimeout(this.process, 0);
 		}
 
 		return this.queue[this.queue.length - 1].promise.promise;
 	}
 
-	static async write(pathToWrite: string, data: any[], writeResolved: number = 0): Promise<void> {
+	static async write(pathToWrite: string, data: any[], writeResolved: number = 0): Promise<any> {
 		const promise = createFSPromise();
 
 		this.queue.push(<FSTask>{
 			promise,
-			operation: "write",
+			operation: "writeFile",
 			path: path.join(this.basePath, pathToWrite),
 			protectFile: writeResolved,
 			data
 		});
 
 		if(this.queue.length === 1 && !this.operating) {
-			this.process();
+			setTimeout(this.process, 0);
 		}
 
 		return this.queue[this.queue.length - 1].promise.promise;
