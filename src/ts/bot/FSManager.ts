@@ -64,9 +64,9 @@ export default class FSManager {
 			data: flags
 		});
 
-		if(this.queue.length === 1 && !this.operating) {
-			setTimeout(this.process, 0);
-		}
+		// if(this.queue.length === 1 && !this.operating) {
+		// 	setTimeout(this.process, 0);
+		// }
 
 		return this.queue[this.queue.length - 1].promise.promise;
 	}
@@ -82,9 +82,9 @@ export default class FSManager {
 			data
 		});
 
-		if(this.queue.length === 1 && !this.operating) {
-			setTimeout(this.process, 0);
-		}
+		// if(this.queue.length === 1 && !this.operating) {
+		// 	setTimeout(this.process, 0);
+		// }
 
 		return this.queue[this.queue.length - 1].promise.promise;
 	}
