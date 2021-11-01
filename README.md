@@ -10,3 +10,9 @@ im trying ok
 todo:
 - refactor into singular bot class to interact with (`const bot = new RandomBot();`)
 - aliases
+	- also make command usage case-insensitive
+- info command
+- make help command not recompute embeds every time
+	- utility embed class?
+- finish viewRoleSaves
+
