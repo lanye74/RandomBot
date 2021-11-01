@@ -1,11 +1,8 @@
 import Bot from "../Bot.js";
-import * as fs_bad from "fs-extra";
+import FSManager from "../FSManager.js";
 import RBCommand from "../RBCommand.js";
-// @ts-ignore
-const fs = fs_bad.default;
 
 import type {MessageCommand} from "../types.js";
-import FSManager from "../FSManager.js";
 
 
 
@@ -27,15 +24,16 @@ export default class releaseRole extends RBCommand {
 		}
 
 
+		const isThereDb = await FSManager.call("exists", "./db.json");
 
-		if(!fs.existsSync("./db.json")) {
+		if(!isThereDb) {
 			channel.send(`Please run \`${Bot.config.prefix}suspendRole\` at least once to initialize the database.`);
 			return;
 		}
 
 
 		const fileWriteID = FSManager.generateProtectiveID();
-		const json = await FSManager.read("./db.json", [{encoding: "utf8"}], fileWriteID).then((file: string) => JSON.parse(file));
+		const json = await FSManager.call("readFile", "./db.json", [{encoding: "utf8"}], fileWriteID).then((file: string) => JSON.parse(file));
 
 		if(!json.servers[guild.id]) {
 			channel.send("This server has no saves.");
@@ -57,7 +55,7 @@ export default class releaseRole extends RBCommand {
 
 
 		const newJSON = JSON.stringify(json, null, "\t");
-		await FSManager.write("./db.json", [newJSON], fileWriteID);
+		await FSManager.call("writeFile", "./db.json", [newJSON], fileWriteID);
 
 
 		const saveData = saveDataCompressed.split("\n");

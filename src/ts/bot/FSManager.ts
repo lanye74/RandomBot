@@ -13,7 +13,7 @@ type FSPromise = {
 
 type FSTask = {
 	promise: FSPromise,
-	operation: string,
+	method: Function,
 	path: string,
 	protectFile: number,
 	data: any[]
@@ -51,50 +51,22 @@ export default class FSManager {
 	private static haltedQueue: FSTask[] = []; // holds tasks that are waiting to write to a protected file
 	private static protectID: number = 1;
 
-
-	// if the read is intended to have a write follow up, protect the file until write is called with id
-	static async read(pathToRead: string, flags: any[] = [], writeIntent: number = 0): Promise<any> {
+	static async call(operation: string, pathToWrite: string, data: any[] = [], fileProtector: number = 0): Promise<any> {
 		const promise = createFSPromise();
 
-		console.log("pushing read to queue")
+		const method = fs[operation];
 
-		this.queue.push(<FSTask>{
-			promise,
-			operation: "readFile",
-			path: path.join(this.basePath, pathToRead), // this needs to be an absolute path
-			protectFile: writeIntent,
-			data: flags
-		});
-
-		console.log({text: "queue from read", queue: this.queue});
-
-		if(this.queue.length === 1 && !this.operating) {
-			setTimeout(() => {console.log("process call resolved in read"); this.process();}, 0);
+		if(!method) {
+			return Promise.reject("Invalid method");
 		}
 
-		console.log("returning")
-
-		return this.queue[this.queue.length - 1].promise.promise;
-	}
-
-	static async write(pathToWrite: string, data: any[], writeResolved: number = 0): Promise<any> {
-		const promise = createFSPromise();
-
-		console.log("pushing write to queue")
-
 		this.queue.push(<FSTask>{
 			promise,
-			operation: "writeFile",
+			method,
 			path: path.join(this.basePath, pathToWrite),
-			protectFile: writeResolved,
+			protectFile: fileProtector,
 			data
 		});
-
-		console.log({text: "queue from write", queue: this.queue});
-
-		if(this.queue.length === 1 && !this.operating) {
-			setTimeout(() => {console.log("process call resolved in write"); this.process();}, 0);
-		}
 
 		return this.queue[this.queue.length - 1].promise.promise;
 	}
@@ -113,7 +85,7 @@ export default class FSManager {
 		this.protectedFiles.delete(targetPath);
 
 
-		let tasks: FSTask[];
+		let tasks: FSTask[] = [];
 
 		if(id !== 0) {
 			tasks = this.haltedQueue.filter((task, index) => { // verbose filter to capture index
@@ -136,11 +108,11 @@ export default class FSManager {
 		}
 
 
-		if(!tasks) {
+		if(tasks.length === 0) {
 			return;
 		}
 
-		this.queue.push(...tasks); // there will only be one but ok
+		this.queue.push(...tasks);
 
 		for(const index of targetIndexes) {
 			this.haltedQueue.splice(index, 1);
@@ -150,16 +122,10 @@ export default class FSManager {
 	static async process(): Promise<void> {
 		this.operating = true;
 
-		console.log(this.queue);
-
 		const object = this.queue.shift();
 
-		console.log(object);
-		console.log("---------------");
 
-		const {promise, operation, path, protectFile, data} = object!;
-		const method: Function = fs[operation];
-
+		const {promise, method, path, protectFile, data} = object!;
 
 		// time to handle path protection
 
