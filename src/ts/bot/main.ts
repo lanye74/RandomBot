@@ -1,13 +1,11 @@
 import Bot from "./Bot.js";
 import CommandHandler from "./CommandHandler.js";
 import * as Discord from "discord.js";
-import * as fs_bad from "fs-extra";
-// @ts-ignore
-const fs = fs_bad.default;
+import FSManager from "./FSManager.js";
 
 
 
-Bot.config = JSON.parse(fs.readFileSync("./config.json", {encoding: "utf8"}));
+Bot.config = JSON.parse(await FSManager.call("readFile", "./config.json", [{encoding: "utf8"}]));
 
 Bot.client = new Discord.Client();
 

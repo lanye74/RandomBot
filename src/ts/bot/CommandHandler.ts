@@ -1,8 +1,5 @@
 import Bot from "./Bot.js";
-import * as fs_bad from "fs-extra";
-import {URL} from "url";
-// @ts-ignore
-const fs = fs_bad.default;
+import FSManager from "./FSManager.js";
 
 import type {MessageCommand} from "./types.js";
 import type RBCommand from "./RBCommand.js";
@@ -12,14 +9,12 @@ import type RBCommand from "./RBCommand.js";
 export default class CommandHandler {
 	static commands: {[name: string]: RBCommand} = {};
 
-	static loadCommands(): Promise<any> {
+	static async loadCommands(): Promise<any> {
 		const commandLoaders: Function[] = [];
 
 
-		const target = (new URL("./commands/", import.meta.url).pathname).slice(1); // slice removes the prefixed /
-
-		const commands: string[] = fs.readdirSync(target)
-		.filter((file: string) => file.split(".")[1] === "js"); // only the ones that are js files
+		const commands: string[] = await FSManager.call("readdir", "./src/js/bot/commands")
+		.then((files: string[]) => files.filter((file: string) => file.split(".")[1] === "js")); // only js files, not .d.ts
 
 
 		Bot.info("Loading commands...");
@@ -28,7 +23,6 @@ export default class CommandHandler {
 		commands.forEach(command => {
 			commandLoaders.push(() => this.loadCommand(command));
 		});
-
 
 
 		return Promise.all(commandLoaders.map(loader => loader()));

@@ -59,9 +59,7 @@ export default class suspendRole extends RBCommand {
 		const saveName = message.id;
 
 
-		const isThereDb = await FSManager.call("exists", "./db.json");
-
-		if(!isThereDb) {
+		if(!(await FSManager.call("exists", "./db.json"))) {
 			await FSManager.call("write", "./db.json", ["{\"servers\": {}"]);
 		}
 

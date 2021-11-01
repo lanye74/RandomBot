@@ -24,9 +24,7 @@ export default class releaseRole extends RBCommand {
 		}
 
 
-		const isThereDb = await FSManager.call("exists", "./db.json");
-
-		if(!isThereDb) {
+		if(!(await FSManager.call("exists", "./db.json"))) {
 			channel.send(`Please run \`${Bot.config.prefix}suspendRole\` at least once to initialize the database.`);
 			return;
 		}
@@ -35,8 +33,11 @@ export default class releaseRole extends RBCommand {
 		const fileWriteID = FSManager.generateProtectiveID();
 		const json = await FSManager.call("readFile", "./db.json", [{encoding: "utf8"}], fileWriteID).then((file: string) => JSON.parse(file));
 
+
 		if(!json.servers[guild.id]) {
 			channel.send("This server has no saves.");
+			FSManager.release("./db.json", fileWriteID);
+			return;
 		}
 
 		const saveLookup = args[0];

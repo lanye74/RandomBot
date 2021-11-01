@@ -51,7 +51,7 @@ export default class FSManager {
 	private static haltedQueue: FSTask[] = []; // holds tasks that are waiting to write to a protected file
 	private static protectID: number = 1;
 
-	static async call(operation: string, pathToWrite: string, data: any[] = [], fileProtector: number = 0): Promise<any> {
+	static async call(operation: string, pathToOperate: string, data: any[] = [], fileProtector: number = 0): Promise<any> {
 		const promise = createFSPromise();
 
 		const method = fs[operation];
@@ -60,13 +60,18 @@ export default class FSManager {
 			return Promise.reject("Invalid method");
 		}
 
+
 		this.queue.push(<FSTask>{
 			promise,
 			method,
-			path: path.join(this.basePath, pathToWrite),
+			path: (path.isAbsolute(pathToOperate)) ? pathToOperate: path.join(this.basePath, pathToOperate),
 			protectFile: fileProtector,
 			data
 		});
+
+		if(this.queue.length === 1 && !this.operating) {
+			setTimeout(() => {this.process()}, 0);
+		}
 
 		return this.queue[this.queue.length - 1].promise.promise;
 	}
@@ -76,10 +81,8 @@ export default class FSManager {
 	}
 
 	static release(what: string, id: number = 0) {
-		this.releaseInternal(path.join(this.basePath, what), id);
-	}
+		const targetPath = (path.isAbsolute(what)) ? what : path.join(this.basePath, what);
 
-	private static releaseInternal(targetPath: string, id: number = 0) {
 		let targetIndexes: number[] = [];
 
 		this.protectedFiles.delete(targetPath);
@@ -137,7 +140,7 @@ export default class FSManager {
 
 				this.process();
 			} else if(this.protectedFiles.has(path) && this.protectedFiles.get(path) === protectFile) {
-				this.releaseInternal(path);
+				this.release(path);
 			} else if(!this.protectedFiles.has(path)) {
 				this.protectedFiles.set(path, protectFile);
 			}
