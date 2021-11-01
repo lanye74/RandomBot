@@ -4,5 +4,9 @@ Eventually going to be some kind of generic do-it-all discord bot. For now I'm j
 
 
 
-yes i am aware that this is really shitty and the file system calls are complete ass
+yes i know this is hot garbage
 im trying ok
+
+todo:
+- refactor into singular bot class to interact with (`const bot = new RandomBot();`)
+- aliases
