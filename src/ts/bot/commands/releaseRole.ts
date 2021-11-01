@@ -48,6 +48,7 @@ export default class releaseRole extends RBCommand {
 
 		if(!saveDataCompressed) {
 			channel.send("There is no save under this ID.");
+			FSManager.release("./db.json", fileWriteID);
 			return;
 		}
 
@@ -69,6 +70,7 @@ export default class releaseRole extends RBCommand {
 
 		if(!role) {
 			channel.send("The role you're trying to release no longer exists.");
+			FSManager.release("./db.json", fileWriteID);
 			return;
 		}
 

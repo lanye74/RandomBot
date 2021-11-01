@@ -41,7 +41,7 @@ function createFSPromise(): FSPromise {
 
 
 export default class FSManager {
-	static queue: FSTask[] = [];
+	private static queue: FSTask[] = [];
 	private static operating: boolean = false;
 
 	private static thisPath = import.meta.url.split("/");
@@ -56,6 +56,8 @@ export default class FSManager {
 	static async read(pathToRead: string, flags: any[] = [], writeIntent: number = 0): Promise<any> {
 		const promise = createFSPromise();
 
+		console.log("pushing read to queue")
+
 		this.queue.push(<FSTask>{
 			promise,
 			operation: "readFile",
@@ -64,15 +66,21 @@ export default class FSManager {
 			data: flags
 		});
 
-		// if(this.queue.length === 1 && !this.operating) {
-		// 	setTimeout(this.process, 0);
-		// }
+		console.log({text: "queue from read", queue: this.queue});
+
+		if(this.queue.length === 1 && !this.operating) {
+			setTimeout(() => {console.log("process call resolved in read"); this.process();}, 0);
+		}
+
+		console.log("returning")
 
 		return this.queue[this.queue.length - 1].promise.promise;
 	}
 
 	static async write(pathToWrite: string, data: any[], writeResolved: number = 0): Promise<any> {
 		const promise = createFSPromise();
+
+		console.log("pushing write to queue")
 
 		this.queue.push(<FSTask>{
 			promise,
@@ -82,9 +90,11 @@ export default class FSManager {
 			data
 		});
 
-		// if(this.queue.length === 1 && !this.operating) {
-		// 	setTimeout(this.process, 0);
-		// }
+		console.log({text: "queue from write", queue: this.queue});
+
+		if(this.queue.length === 1 && !this.operating) {
+			setTimeout(() => {console.log("process call resolved in write"); this.process();}, 0);
+		}
 
 		return this.queue[this.queue.length - 1].promise.promise;
 	}
@@ -93,10 +103,59 @@ export default class FSManager {
 		return ++this.protectID;
 	}
 
+	static release(what: string, id: number = 0) {
+		this.releaseInternal(path.join(this.basePath, what), id);
+	}
+
+	private static releaseInternal(targetPath: string, id: number = 0) {
+		let targetIndexes: number[] = [];
+
+		this.protectedFiles.delete(targetPath);
+
+
+		let tasks: FSTask[];
+
+		if(id !== 0) {
+			tasks = this.haltedQueue.filter((task, index) => { // verbose filter to capture index
+				if(task.path === targetPath && task.protectFile === id) {
+					targetIndexes.push(index);
+					return true;
+				}
+
+				return false;
+			});
+		} else {
+			tasks = this.haltedQueue.filter((task, index) => { // verbose filter to capture index
+				if(task.path === targetPath) {
+					targetIndexes.push(index);
+					return true;
+				}
+
+				return false;
+			});
+		}
+
+
+		if(!tasks) {
+			return;
+		}
+
+		this.queue.push(...tasks); // there will only be one but ok
+
+		for(const index of targetIndexes) {
+			this.haltedQueue.splice(index, 1);
+		}
+	}
+
 	static async process(): Promise<void> {
 		this.operating = true;
 
+		console.log(this.queue);
+
 		const object = this.queue.shift();
+
+		console.log(object);
+		console.log("---------------");
 
 		const {promise, operation, path, protectFile, data} = object!;
 		const method: Function = fs[operation];
@@ -105,22 +164,17 @@ export default class FSManager {
 		// time to handle path protection
 
 		if(protectFile !== 0) {
-			if(this.protectedFiles.has(path) && !(this.protectedFiles.get(path) === protectFile)) {
+			if(this.protectedFiles.has(path) && this.protectedFiles.get(path) !== protectFile) {
 				this.haltedQueue.push(object!);
 
 				if(this.queue.length === 0) return;
 
 				this.process();
+			} else if(this.protectedFiles.has(path) && this.protectedFiles.get(path) === protectFile) {
+				this.releaseInternal(path);
+			} else if(!this.protectedFiles.has(path)) {
+				this.protectedFiles.set(path, protectFile);
 			}
-
-			if(this.protectedFiles.has(path) && this.protectedFiles.get(path) === protectFile) {
-				this.protectedFiles.delete(path);
-
-				this.queue.push(...this.haltedQueue.filter(task => task.path === path));
-				this.haltedQueue = this.haltedQueue.filter(task => task.path !== path);
-			}
-		} else {
-			this.protectedFiles.set(path, protectFile);
 		}
 
 
