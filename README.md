@@ -8,6 +8,7 @@ yes i know this is hot garbage
 im trying ok
 
 todo:
+- electron
 - refactor into singular bot class to interact with (`const bot = new RandomBot();`)
 - aliases
 	- also make command usage case-insensitive

@@ -24,12 +24,6 @@ export default class releaseRole extends RBCommand {
 		}
 
 
-		if(!(await FSManager.call("exists", "./db.json"))) {
-			channel.send(`Please run \`${Bot.config.prefix}suspendRole\` at least once to initialize the database.`);
-			return;
-		}
-
-
 		const fileWriteID = FSManager.generateProtectiveID();
 		const json = await FSManager.call("readFile", "./db.json", [{encoding: "utf8"}], fileWriteID).then((file: string) => JSON.parse(file));
 
@@ -63,7 +57,7 @@ export default class releaseRole extends RBCommand {
 		saveData.pop(); // remove trailing \n
 
 
-		const [roleID, ...memberIDs] = [...saveData];
+		const [_timestamp, roleID, ...memberIDs] = [...saveData];
 
 		const role = await guild.roles.fetch(roleID);
 

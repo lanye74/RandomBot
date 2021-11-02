@@ -31,17 +31,21 @@ export default class suspendRole extends RBCommand {
 			return;
 		}
 
+		saveData += `${message.createdTimestamp}\n`;
+
 		saveData += `${role.id}\n`;
 
 		// role.members only returns a list of cached members with this role
 		// that isn't good enough, so let's check every member for the role because I hate myself lmao
 
 		const members = await guild.members.fetch();
+		let membersWithIndex = 0;
 
 
 		members.forEach(member => {
 			if(member.roles.cache.has(role.id)) {
 				member.roles.remove(role);
+				membersWithIndex++;
 
 				saveData += `${member.id}\n`;
 			}
@@ -59,11 +63,6 @@ export default class suspendRole extends RBCommand {
 		const saveName = message.id;
 
 
-		if(!(await FSManager.call("exists", "./db.json"))) {
-			await FSManager.call("write", "./db.json", ["{\"servers\": {}"]);
-		}
-
-
 		const fileWriteID = FSManager.generateProtectiveID();
 
 		const json = await FSManager.call("readFile", "./db.json", [{encoding: "utf8"}], fileWriteID).then((file: string) => JSON.parse(file));
@@ -78,6 +77,6 @@ export default class suspendRole extends RBCommand {
 		await FSManager.call("writeFile", "./db.json", [newJSON], fileWriteID);
 
 
-		channel.send(`Successfully stored roles away as the message ID of the command (\`${saveName}\`).`);
+		channel.send(`Successfully stored role "${role.name}" from ${membersWithIndex} member${(membersWithIndex > 1) ? "s" : ""} away as the message ID of the command (\`${saveName}\`).`);
 	}
 }

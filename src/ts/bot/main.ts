@@ -16,6 +16,11 @@ CommandHandler.loadCommands()
 .then(() => Bot.client.login(Bot.config.token));
 
 
+if(!(await FSManager.call("exists", "./db.json"))) {
+	await FSManager.call("write", "./db.json", ["{\"servers\": {}"]);
+}
+
+
 
 Bot.client.on("ready", () => {
 	Bot.log("", "Bold", "Ready.");

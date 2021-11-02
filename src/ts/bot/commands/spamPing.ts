@@ -37,9 +37,10 @@ export default class spamPing extends RBCommand {
 			return;
 		}
 
+
 		this.queue.push([`<@${who.id}> ${text}`, howMany, channel]);
 
-		if(this.queue.length === 0 && !this.pinging) {
+		if(this.queue.length === 1 && !this.pinging) {
 			this.spamPing();
 		}
 	}
