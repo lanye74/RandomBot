@@ -39,8 +39,9 @@ class sha1 {
 export default class viewRoleSaves extends RBCommand {
 	static description = "Views roles saved via suspendRole.";
 	static friendlyName = "View Role Saves";
-	static usage = "viewRoleSaves <optional id>";
+	static usage = "viewRoleSaves {page | id} {page # | save id}";
 	static cachedServers: Map<string, [string, ParsedRoleSave[]]> = new Map();
+	static cachedRoleNames: Map<string, string> = new Map();
 	//                        id       hash    data
 
 	static async run(command: MessageCommand) {
@@ -68,8 +69,47 @@ export default class viewRoleSaves extends RBCommand {
 
 		if(this.cachedServers.has(guild.id) && this.cachedServers.get(guild.id)![0] === cachedHash) {
 			parsedSaves = this.cachedServers.get(guild.id)![1];
+			console.log("pulling from cache");
 		} else { // if there either is no cache or it's been updated, recompute
 			parsedSaves = this.cacheServer(serverSaves, guild.id);
+			console.log("cached");
+		}
+
+
+
+		if(args.length === 0) {
+			const first10 = parsedSaves.slice(0, 10);
+
+			first10.forEach(async save => {
+				// ass
+				// cock
+				// balls
+				const role = (this.cachedRoleNames.has(save.roleID)) ? this.cachedRoleNames.get(save.roleID) : (async () => {const role = await guild.roles.fetch(save.roleID); this.cachedRoleNames.set(save.roleID, role!.name); return role});
+				// ass
+				// shit
+				// cum
+				// piss
+				// im working on this later
+
+
+				embed.addField(`ID: ${save.saveID}`, "Role:");
+			});
+		} else if(args[0] === "page") {
+			const pages = Math.ceil(parsedSaves.length / 10);
+			const pageRequested = parseInt(args[1]);
+
+			if(isNaN(pageRequested)) {
+				channel.send("Invalid option page number.");
+				return;
+			}
+
+
+
+		} else if(args[0] === "id") {
+
+		} else {
+			channel.send("You didn't specify valid a valid first argument.");
+			return;
 		}
 
 		// if message is --viewRoleSaves, send most recent 10

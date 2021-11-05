@@ -33,7 +33,7 @@ export default class spamPing extends RBCommand {
 		}
 
 		if(howMany < 1 || howMany > 100) {
-			channel.send("<amount> should be a value between 1 and 100.");
+			channel.send("<how many times> should be a value between 1 and 100.");
 			return;
 		}
 

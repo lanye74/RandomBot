@@ -16,4 +16,18 @@ todo:
 - make help command not recompute embeds every time
 	- utility embed class?
 - finish viewRoleSaves
+- server specific prefixes
+- make help command embed title generic (`Bot.config.name`?)
 
+
+
+
+
+if for whatever god awful reason you want to run this yourself you need a config.json file
+```json
+{
+	"prefix": "--",
+
+	"token": "YOUR-TOKEN-HERE"
+}
+```
