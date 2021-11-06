@@ -15,7 +15,9 @@ todo:
 - info command
 - make help command not recompute embeds every time
 	- utility embed class?
-- finish viewRoleSaves
+- ~~finish viewRoleSaves~~
+	- ~~make it cache things~~
+	- make it cache more things
 - server specific prefixes
 - make help command embed title generic (`Bot.config.name`?)
 

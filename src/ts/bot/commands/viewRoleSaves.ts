@@ -1,7 +1,7 @@
 import {createHash} from "crypto"; // compute hash and cache embeds later (only most recent)
 import FSManager from "../FSManager.js";
 import RBCommand from "../RBCommand.js";
-import {MessageEmbed} from "discord.js"
+import {Collection, MessageEmbed} from "discord.js"
 
 import type {EmbedFieldData, Guild} from "discord.js";
 import type {MessageCommand} from "../types.js";
@@ -38,6 +38,7 @@ export default class viewRoleSaves extends RBCommand {
 	static friendlyName = "View Role Saves";
 	static usage = "viewRoleSaves {page | id} {page # | save id}";
 	static cachedRoleNames: Map<string, string> = new Map();
+	static cachedUserNames: Map<string, string> = new Map();
 
 	static async run(command: MessageCommand) {
 		const {args, channel, guild} = command;
@@ -71,31 +72,65 @@ export default class viewRoleSaves extends RBCommand {
 		if(args.length === 0) {
 			const first10 = parsedSaves.slice(0, 10);
 
-			const fieldsQueue: Function[] = [];
+			embed.addFields(...(await this.savesToFields(first10, guild)));
 
-			first10.forEach(save => {
-				fieldsQueue.push(() => this.loadRoleField(save, guild));
-			});
-
-
-			// basically ripped from command handler lmao
-			const fields = await Promise.all(fieldsQueue.map(field => field()));
-			embed.addFields(...fields);
+			embed.setTitle(`Server Saves`);
+			embed.setFooter(`Page 1/${Math.ceil(parsedSaves.length / 10)}`);
 
 			channel.send(embed);
 		} else if(args[0] === "page") {
 			const pages = Math.ceil(parsedSaves.length / 10);
-			const pageRequested = parseInt(args[1]);
+			let pageIndex = parseInt(args[1]);
 
-			if(isNaN(pageRequested)) {
+			if(isNaN(pageIndex)) {
 				channel.send("Invalid option page number.");
 				return;
 			}
 
+			if(pageIndex > pages) {
+				pageIndex = pages;
+			}
 
-			
+			if(pageIndex < 1) {
+				pageIndex = 1;
+			}
+
+
+			const saves = parsedSaves.slice(10 * (pageIndex - 1), 10 * pageIndex);
+
+			embed.addFields(...(await this.savesToFields(saves, guild)));
+
+			embed.setTitle(`Page ${pageIndex} of Server Saves`);
+			embed.setFooter(`Page ${pageIndex}/${pages}`);
+
+			channel.send(embed);
 		} else if(args[0] === "id") {
+			const save = parsedSaves.filter(save => save.saveID === args[1])[0];
 
+			if(!save) {
+				channel.send("The save you're searching for doesn't exist.");
+				return;
+			}
+
+			const members = await guild.members.fetch({user: save.members});
+			const tagsList = members.map(user => user.user.tag);
+
+			if(tagsList.length > 10) {
+				tagsList.splice(9, tagsList.length);
+				tagsList.push(`...and ${tagsList.length - 9} other members`);
+			}
+
+
+
+			embed.setTitle(`Save ${save.saveID}`);
+			embed.addFields(
+				{name: "Role Name", value: await this.resolveRoleName(save.roleID, guild)},
+				{name: "Date", value: (new Date(save.date).toLocaleString() + " EST")},
+				{name: "Members", value: tagsList.join("\n")}
+			);
+
+
+			channel.send(embed);
 		} else {
 			channel.send("You didn't specify valid a valid first argument.");
 			return;
@@ -123,22 +158,38 @@ export default class viewRoleSaves extends RBCommand {
 		return out;
 	}
 
+	static async savesToFields(saves: ParsedRoleSave[], guild: Guild): Promise<EmbedFieldData[]> {
+		const queue: Function[] = [];
+
+		saves.forEach(save => {
+			queue.push(() => this.loadRoleField(save, guild));
+		});
+
+		return Promise.all(queue.map(field => field()));
+	}
+
 	static async loadRoleField(save: ParsedRoleSave, guild: Guild): Promise<any> {
 		return new Promise(async resolve => {
-			let role = this.cachedRoleNames.get(save.roleID);
+			const role = this.resolveRoleName(save.roleID, guild);
 
-			if(role === undefined) {
-				const discordRole = await guild.roles.fetch(save.roleID);
-				let role = discordRole!.name;
+			resolve(<EmbedFieldData>{name: `ID: \`${save.saveID}\``, value: `Role name: ${role}\n${save.members.length} members`});
+		});
+	}
 
-				if(!discordRole) {
-					role = "Deleted Role";
-				}
+	static async resolveRoleName(id: string, guild: Guild): Promise<string> {
+		let role = this.cachedRoleNames.get(id);
 
-				this.cachedRoleNames.set(save.roleID, role);
+		if(role === undefined) {
+			const discordRole = await guild.roles.fetch(id);
+			role = discordRole!.name;
+
+			if(!discordRole) {
+				role = "Deleted Role";
 			}
 
-			resolve(<EmbedFieldData>{name: `ID: \`${save.saveID}\``, value: `Role name: ${role}\n${save.members.length} members`, inline: false});
-		});
+			this.cachedRoleNames.set(id, role);
+		}
+
+		return role!;
 	}
 }
