@@ -193,7 +193,7 @@ export default class viewRoleSaves extends RBCommand {
 		return new Promise(async resolve => {
 			const role = this.resolveRoleName(save.roleID, guild);
 
-			resolve(<EmbedFieldData>{name: `ID: \`${save.saveID}\``, value: `Role name: ${role}\n${save.members.length} members`});
+			resolve(<EmbedFieldData>{name: `ID: ${save.saveID}`, value: `Role name: ${role}\n${save.members.length} members`});
 		});
 	}
 
