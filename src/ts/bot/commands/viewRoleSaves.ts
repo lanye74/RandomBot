@@ -1,7 +1,7 @@
 import {createHash} from "crypto"; // compute hash and cache embeds later (only most recent)
 import FSManager from "../FSManager.js";
 import RBCommand from "../RBCommand.js";
-import {Collection, MessageEmbed} from "discord.js"
+import {Collection, GuildMember, MessageEmbed} from "discord.js"
 
 import type {EmbedFieldData, Guild} from "discord.js";
 import type {MessageCommand} from "../types.js";
@@ -112,8 +112,29 @@ export default class viewRoleSaves extends RBCommand {
 				return;
 			}
 
-			const members = await guild.members.fetch({user: save.members});
-			const tagsList = members.map(user => user.user.tag);
+			const members = save.members.slice(0);
+			const restoredCachedMembers: string[] = [];
+
+			members.forEach((member, index) => {
+				if(this.cachedUserNames.has(member)) {
+					restoredCachedMembers.push(this.cachedUserNames.get(member)!);
+					members.splice(index, 1);
+				}
+			});
+
+
+			const membersNeededToFetch = members.slice(0, 10 - Math.min(10, restoredCachedMembers.length));
+			let fetchedMembers: any;
+
+			if(membersNeededToFetch.length > 0) {
+				fetchedMembers = await guild.members.fetch({user: membersNeededToFetch});
+			}
+
+
+			fetchedMembers = fetchedMembers.map((member: GuildMember) => member.user.tag);
+
+			const tagsList = restoredCachedMembers.concat(fetchedMembers);
+
 
 			if(tagsList.length > 10) {
 				tagsList.splice(9, tagsList.length);

@@ -18,6 +18,7 @@ todo:
 - ~~finish viewRoleSaves~~
 	- ~~make it cache things~~
 	- make it cache more things
+- utility class to reset caches every few hours (8?)
 - server specific prefixes
 - make help command embed title generic (`Bot.config.name`?)
 
