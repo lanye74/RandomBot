@@ -1,8 +1,9 @@
 import {createHash} from "crypto"; // compute hash and cache embeds later (only most recent)
 import FSManager from "../FSManager.js";
-import {EmbedFieldData, MessageEmbed} from "discord.js";
 import RBCommand from "../RBCommand.js";
+import {MessageEmbed} from "discord.js"
 
+import type {EmbedFieldData, Guild} from "discord.js";
 import type {MessageCommand} from "../types.js";
 
 
@@ -36,8 +37,6 @@ export default class viewRoleSaves extends RBCommand {
 	static description = "Views roles saved via suspendRole.";
 	static friendlyName = "View Role Saves";
 	static usage = "viewRoleSaves {page | id} {page # | save id}";
-	static cachedServers: Map<string, [string, ParsedRoleSave[]]> = new Map();
-	//                        id       hash    data
 	static cachedRoleNames: Map<string, string> = new Map();
 
 	static async run(command: MessageCommand) {
@@ -58,18 +57,7 @@ export default class viewRoleSaves extends RBCommand {
 
 		const serverSaves = <Object>json.servers[guild.id].roleSaves;
 
-		let parsedSaves: ParsedRoleSave[] = [];
-
-
-		const cachedHash = toSHA1Hash(JSON.stringify(serverSaves));
-
-		if(this.cachedServers.has(guild.id) && this.cachedServers.get(guild.id)![0] === cachedHash) {
-			parsedSaves = this.cachedServers.get(guild.id)![1];
-			console.log("pulling from cache");
-		} else { // if there either is no cache or it's been updated, recompute
-			parsedSaves = this.cacheServer(serverSaves, guild.id);
-			console.log("cached");
-		}
+		let parsedSaves: ParsedRoleSave[] = this.parseSaves(serverSaves);
 
 
 		if(parsedSaves.length === 0) {
@@ -86,32 +74,15 @@ export default class viewRoleSaves extends RBCommand {
 			const fieldsQueue: Function[] = [];
 
 			first10.forEach(save => {
-				fieldsQueue.push(() => loadRoleField(save));
+				fieldsQueue.push(() => this.loadRoleField(save, guild));
 			});
 
-			const fields = await Promise.all(fieldsQueue.map(field => field()))
+
+			// basically ripped from command handler lmao
+			const fields = await Promise.all(fieldsQueue.map(field => field()));
 			embed.addFields(...fields);
+
 			channel.send(embed);
-
-			async function loadRoleField(save: ParsedRoleSave): Promise<any> {
-				return new Promise(async resolve => {
-					let role = viewRoleSaves.cachedRoleNames.get(save.roleID);
-					debugger
-
-					if(role === undefined) {
-						const discordRole = await guild.roles.fetch(save.roleID);
-						let role = discordRole!.name;
-
-						if(!discordRole) {
-							role = "Deleted Role";
-						}
-
-						viewRoleSaves.cachedRoleNames.set(save.roleID, role);
-					}
-
-					resolve(<EmbedFieldData>{name: `ID: ${save.saveID}`, value: `Role: "${role}"; ${save.members.length} members`, inline: false});
-				});
-			}
 		} else if(args[0] === "page") {
 			const pages = Math.ceil(parsedSaves.length / 10);
 			const pageRequested = parseInt(args[1]);
@@ -122,7 +93,7 @@ export default class viewRoleSaves extends RBCommand {
 			}
 
 
-
+			
 		} else if(args[0] === "id") {
 
 		} else {
@@ -135,10 +106,11 @@ export default class viewRoleSaves extends RBCommand {
 		// if message is --viewRoleSaves id [id], return [Role name + first 10 members]
 	}
 
-	static cacheServer(raw: Object, guildID: string) {
+	static parseSaves(raw: Object) {
 		const out: ParsedRoleSave[] = [];
 
-		for(const [saveID, data] of Object.entries(raw)) {
+
+		Object.entries(raw).forEach(([saveID, data]) => {
 			const members = data.split("\n");
 			members.pop(); // trailing \n
 
@@ -146,22 +118,27 @@ export default class viewRoleSaves extends RBCommand {
 			const roleID = members.shift();
 
 			out.push({saveID, date: parseInt(date), roleID, members});
-		}
-
-
-		out.sort((a, b) => { // sort by most recent
-			if(a.date > b.date) {
-				return 1;
-			} else if(b.date > a.date) {
-				return -1;
-			}
-
-			return 0;
 		});
 
-		const recomputedHash = toSHA1Hash(JSON.stringify(out));
-		this.cachedServers.set(guildID, [recomputedHash, out]);
-
 		return out;
+	}
+
+	static async loadRoleField(save: ParsedRoleSave, guild: Guild): Promise<any> {
+		return new Promise(async resolve => {
+			let role = this.cachedRoleNames.get(save.roleID);
+
+			if(role === undefined) {
+				const discordRole = await guild.roles.fetch(save.roleID);
+				let role = discordRole!.name;
+
+				if(!discordRole) {
+					role = "Deleted Role";
+				}
+
+				this.cachedRoleNames.set(save.roleID, role);
+			}
+
+			resolve(<EmbedFieldData>{name: `ID: \`${save.saveID}\``, value: `Role name: ${role}\n${save.members.length} members`, inline: false});
+		});
 	}
 }
