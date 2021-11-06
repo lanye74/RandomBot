@@ -191,7 +191,7 @@ export default class viewRoleSaves extends RBCommand {
 
 	static async loadRoleField(save: ParsedRoleSave, guild: Guild): Promise<any> {
 		return new Promise(async resolve => {
-			const role = this.resolveRoleName(save.roleID, guild);
+			const role = await this.resolveRoleName(save.roleID, guild);
 
 			resolve(<EmbedFieldData>{name: `ID: ${save.saveID}`, value: `Role name: ${role}\n${save.members.length} members`});
 		});
