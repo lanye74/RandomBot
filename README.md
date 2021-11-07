@@ -15,12 +15,9 @@ todo:
 - info command
 - make help command not recompute embeds every time
 	- utility embed class?
-- ~~finish viewRoleSaves~~
-	- ~~make it cache things~~
-	- make it cache more things
-- utility class to reset caches every few hours (8?)
 - add a deleteRoleSave command
 - server specific prefixes
+- add default "timed" method to RBCommand, i.e. an implementation of what kill has
 - make help command embed title generic (`Bot.config.name`?)
 
 

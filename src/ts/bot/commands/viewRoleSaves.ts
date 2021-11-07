@@ -37,8 +37,6 @@ export default class viewRoleSaves extends RBCommand {
 	static description = "Views roles saved via suspendRole.";
 	static friendlyName = "View Role Saves";
 	static usage = "viewRoleSaves {page | id} {page # | save id}";
-	static cachedRoleNames: Map<string, string> = new Map();
-	static cachedUserNames: Map<string, string> = new Map();
 
 	static async run(command: MessageCommand) {
 		const {args, channel, guild} = command;
@@ -112,35 +110,18 @@ export default class viewRoleSaves extends RBCommand {
 				return;
 			}
 
-			const members = save.members.slice(0);
-			const restoredCachedMembers: string[] = [];
 
-			members.forEach((member, index) => {
-				if(this.cachedUserNames.has(member)) {
-					restoredCachedMembers.push(this.cachedUserNames.get(member)!);
-					members.splice(index, 1);
-				}
-			});
+			const saveMembers = save.members.slice(0);
+			const members = await guild.members.fetch({user: saveMembers});
 
 
-			const membersNeededToFetch = members.slice(0, 10 - Math.min(10, restoredCachedMembers.length));
-			let fetchedMembers: any;
-
-			if(membersNeededToFetch.length > 0) {
-				fetchedMembers = await guild.members.fetch({user: membersNeededToFetch});
-			}
-
-
-			fetchedMembers = fetchedMembers.map((member: GuildMember) => member.user.tag);
-
-			const tagsList = restoredCachedMembers.concat(fetchedMembers);
+			const tagsList = members.map((member: GuildMember) => member.user.tag);
 
 
 			if(tagsList.length > 10) {
 				tagsList.splice(9, tagsList.length);
 				tagsList.push(`...and ${tagsList.length - 9} other members`);
 			}
-
 
 
 			embed.setTitle(`Save ${save.saveID}`);
@@ -156,10 +137,6 @@ export default class viewRoleSaves extends RBCommand {
 			channel.send("You didn't specify valid a valid first argument.");
 			return;
 		}
-
-		// if message is --viewRoleSaves, send most recent 10
-		// if message is --viewRoleSaves page [x], return parsedSaves.slice(10 * (page - 1), 10 * page)
-		// if message is --viewRoleSaves id [id], return [Role name + first 10 members]
 	}
 
 	static parseSaves(raw: Object) {
@@ -198,19 +175,13 @@ export default class viewRoleSaves extends RBCommand {
 	}
 
 	static async resolveRoleName(id: string, guild: Guild): Promise<string> {
-		let role = this.cachedRoleNames.get(id);
+		const discordRole = await guild.roles.fetch(id);
+		let role = discordRole!.name;
 
-		if(role === undefined) {
-			const discordRole = await guild.roles.fetch(id);
-			role = discordRole!.name;
-
-			if(!discordRole) {
-				role = "Deleted Role";
-			}
-
-			this.cachedRoleNames.set(id, role);
+		if(!discordRole) {
+			role = "Deleted Role";
 		}
 
-		return role!;
+		return role;
 	}
 }
