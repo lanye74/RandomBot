@@ -9,6 +9,7 @@ import type {MessageCommand} from "../types.js";
 
 
 export default class evaluate extends RBCommand {
+	static aliases = ["eval"];
 	static description = "Evaluates a command locally. Extremely dangerous.";
 	static friendlyName = "Evaluate";
 	static usage = "evaluate <command>";

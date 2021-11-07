@@ -8,6 +8,7 @@ import type {MessageCommand} from "../types.js";
 
 
 export default class help extends RBCommand {
+	static aliases = [];
 	static description = "Lists all commands, or shows information about a specific command.";
 	static friendlyName = "Help";
 	static usage = "help <optional command name>";
@@ -49,17 +50,12 @@ export default class help extends RBCommand {
 		let masterEmbedDescription = "";
 
 		Object.values(CommandHandler.commands).forEach((command: RBCommand) => {
-			// @ts-ignore -- yes, command.name does exist
 			masterEmbedDescription += `\`${command.name}\` | ${command.description}\n`;
 
 
-			// @ts-ignore -- yes
 			this.specificHelpEmbeds[command.name] = new MessageEmbed();
-			// @ts-ignore
 			this.specificHelpEmbeds[command.name].setColor("#7b42f5");
-			// @ts-ignore
 			this.specificHelpEmbeds[command.name].setTitle(command.friendlyName);
-			// @ts-ignore
 			this.specificHelpEmbeds[command.name].setDescription(`${command.description}\n\nUsage: \`${Bot.config.prefix}${command.usage}\``);
 		});
 

@@ -6,6 +6,7 @@ import type {MessageCommand} from "../types.js";
 
 
 export default class suspendRole extends RBCommand {
+	static aliases = ["sr"];
 	static description = "Removes the inputted role from all users and stores it to be later returned.";
 	static friendlyName = "Suspend Role";
 	static usage = "suspendRole <role ID>";

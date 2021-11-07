@@ -8,6 +8,8 @@ import type RBCommand from "./RBCommand.js";
 
 export default class CommandHandler {
 	static commands: {[name: string]: RBCommand} = {};
+	static aliases: {[name: string]: RBCommand} = {};
+	static allCommands: {[name: string]: RBCommand} = {};
 
 	static async loadCommands(): Promise<any> {
 		const commandLoaders: Function[] = [];
@@ -39,15 +41,30 @@ export default class CommandHandler {
 		if(input instanceof Array) {
 			input.forEach(command => {
 				// Bot.info(`(${number}/${commands.length}) Loaded ${command.default.name}.`);
-				this.commands[command.default.name] = command.default;
+				this.setCommand(command);
 			});
 		} else {
-			this.commands[input.default.name] = input.default;
+			this.setCommand(input);
+		}
+
+		Object.assign(this.allCommands, this.commands, this.aliases);
+	}
+
+	static setCommand(input: any): void {
+		const command = <RBCommand>input.default;
+		const lowerName = command.name.toLowerCase();
+
+		this.commands[lowerName] = command;
+
+		if(command.aliases.length > 0) {
+			command.aliases.forEach((alias: string) => {
+				this.aliases[alias.toLowerCase()] = this.commands[lowerName];
+			});
 		}
 	}
 
 	static run(command: MessageCommand): void {
-		const commandFunction: RBCommand | undefined = this.commands[command.name];
+		const commandFunction: RBCommand | undefined = this.allCommands[command.name];
 
 
 		if(!commandFunction) {

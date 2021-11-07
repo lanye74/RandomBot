@@ -6,6 +6,7 @@ import type {MessageCommand} from "../types.js";
 
 
 export default class debug extends RBCommand {
+	static aliases = [];
 	static description = "Lets Layne debug things.";
 	static friendlyName = "Debug";
 	static usage = "debug {...args}";

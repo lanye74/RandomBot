@@ -7,6 +7,7 @@ import type {MessageCommand} from "../types.js";
 
 
 export default class releaseRole extends RBCommand {
+	static aliases = ["rr"];
 	static description = "Returns a previously stored role to the members who had it.";
 	static friendlyName = "Release Role";
 	static usage = "releaseRole <message ID that suspendRole was invoked in>";

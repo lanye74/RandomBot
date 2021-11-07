@@ -9,6 +9,8 @@ const botVersion = await FSManager.call("readFile", "./package.json", [{encoding
 
 export default class version extends RBCommand {
 	static botVersion = JSON.parse(botVersion).version; // probably should be moved to the Bot class
+
+	static aliases = ["ver"];
 	static description = "Returns the current bot version.";
 	static friendlyName = "Version";
 	static usage = "version";

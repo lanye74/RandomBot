@@ -6,6 +6,7 @@ import type {MessageCommand} from "../types.js";
 
 
 export default class ban extends RBCommand {
+	static aliases = [];
 	static description = "Bans a user.";
 	static friendlyName = "Ban";
 	static usage = "ban [mention user] <optional days of messages to clear> <optional reason>";
@@ -22,13 +23,13 @@ export default class ban extends RBCommand {
 
 
 		if(args[1]) {
-			const days = args[1];
+			const days = parseInt(args[1]);
 
-			if(isNaN(parseInt(days)) || parseInt(days) > 7 || parseInt(days) < 0) {
+			if(isNaN(days) || days > 7 || days < 0) {
 				channel.send("Invalid number of days of messages to clean. It must be a number from 0 to 7.");
 				return;
 			} else {
-				banOptions.days = parseInt(days);
+				banOptions.days = days;
 			}
 		}
 

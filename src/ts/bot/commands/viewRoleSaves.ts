@@ -1,7 +1,6 @@
-import {createHash} from "crypto"; // compute hash and cache embeds later (only most recent)
 import FSManager from "../FSManager.js";
 import RBCommand from "../RBCommand.js";
-import {Collection, GuildMember, MessageEmbed} from "discord.js"
+import {GuildMember, MessageEmbed} from "discord.js"
 
 import type {EmbedFieldData, Guild} from "discord.js";
 import type {MessageCommand} from "../types.js";
@@ -17,23 +16,8 @@ type ParsedRoleSave = {
 
 
 
-function toSHA1Hash(what: string): string {
-	return createHash("sha1").update(what).digest("base64");
-	// benchmarking led me to discover that sha-1 hex is fastest
-	// digest type makes little difference in the testing; however base64 is more efficient at encoding data
-	// leaderboard:
-
-	// md5-hex x 72,128 ops/sec ±1.20% (88 runs sampled)
-	// md5-base64 x 72,478 ops/sec ±1.69% (90 runs sampled)
-	// sha1-hex x 139,350 ops/sec ±2.90% (89 runs sampled)
-	// sha1-base64 x 139,769 ops/sec ±3.25% (88 runs sampled)
-	// sha256-hex x 135,440 ops/sec ±3.87% (85 runs sampled)
-	// sha256-base64 x 133,716 ops/sec ±4.37% (89 runs sampled)
-}
-
-
-
 export default class viewRoleSaves extends RBCommand {
+	static aliases = ["vrs"];
 	static description = "Views roles saved via suspendRole.";
 	static friendlyName = "View Role Saves";
 	static usage = "viewRoleSaves {page | id} {page # | save id}";

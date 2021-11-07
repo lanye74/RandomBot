@@ -10,14 +10,15 @@ im trying ok
 todo:
 - electron
 - refactor into singular bot class to interact with (`const bot = new RandomBot();`)
-- aliases
-	- also make command usage case-insensitive
+- ~~aliases~~
+	- ~~also make command usage case-insensitive~~
 		- this needs to apply to help command too
 - info command
 - add a deleteRoleSave command
 - server specific prefixes
 - add default "timed" method to RBCommand, i.e. an implementation of what kill has
 - make help command embed title generic (`Bot.config.name`?)
+- make RBCommand an interface so that having the class there makes logical sense
 
 
 

@@ -5,6 +5,7 @@ import type {MessageCommand} from "../types.js";
 
 
 export default class ping extends RBCommand {
+	static aliases = [];
 	static description = "Get information about the bot's connection.";
 	static friendlyName = "Ping";
 	static usage = "ping";

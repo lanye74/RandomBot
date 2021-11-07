@@ -7,6 +7,7 @@ import type {TextChannel} from "discord.js";
 
 
 export default class kill extends RBCommand {
+	static aliases = [];
 	static description = "Kills the bot. Don't touch.";
 	static friendlyName = "Kill";
 	static usage = "kill";

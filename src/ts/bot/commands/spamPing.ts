@@ -7,6 +7,7 @@ import type {TextChannel} from "discord.js";
 
 
 export default class spamPing extends RBCommand {
+	static aliases = ["spam"];
 	static description = "Spam ping a user.";
 	static friendlyName = "Spam Ping";
 	static usage = "spamPing [mention user] <how many times> <optional text>";

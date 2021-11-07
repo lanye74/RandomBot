@@ -5,6 +5,7 @@ import type {MessageCommand} from "../types.js";
 
 
 export default class kick extends RBCommand {
+	static aliases = [];
 	static description = "Kicks a user.";
 	static friendlyName = "Kick";
 	static usage = "kick [mention user] <optional reason>";
