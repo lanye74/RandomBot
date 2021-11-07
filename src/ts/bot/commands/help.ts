@@ -12,39 +12,59 @@ export default class help extends RBCommand {
 	static friendlyName = "Help";
 	static usage = "help <optional command name>";
 
+	static genericHelpCommand = new MessageEmbed();
+	static specificHelpEmbeds: {[name: string]: MessageEmbed} = {};
+	static embedInitted = false;
+
 	static run(command: MessageCommand): void {
 		const {args, channel} = command;
 
-		const embed = new MessageEmbed();
-		embed.setColor("#7b42f5");
+
+		if(!this.embedInitted) {
+			this.initEmbeds();
+			this.embedInitted = true;
+		}
+
 
 		if(!args[0]) { // general help command
-			embed.setTitle("Commands for Lanye's Utilities");
-
-			let text = "";
-
-			Object.values(CommandHandler.commands).forEach((command: RBCommand) => {
-				// @ts-ignore -- yes, command.name does exist
-				text += `${command.name} | ${command.description}\n`;
-			});
-
-			embed.setDescription(text.trim());
-
-			embed.setFooter(`Use "${Bot.config.prefix}help <command>" to see information on a specific command`);
+			channel.send(this.genericHelpCommand);
 		} else {
 			const command = CommandHandler.commands[args[0]];
-
 
 			if(!command) {
 				channel.send("The command you're looking for doesn't exist.");
 				return;
 			}
 
-			embed.setTitle(command.friendlyName);
-
-			embed.setDescription(`${command.description}\n\nUsage: \`${Bot.config.prefix}${command.usage}\``);
+			channel.send(this.specificHelpEmbeds[args[0]]);
 		}
+	}
 
-		channel.send(embed);
+	static initEmbeds(): void {
+		// arg-less help command
+
+		this.genericHelpCommand.setColor("#7b42f5");
+		this.genericHelpCommand.setTitle("Commands for Lanye's Utilities");
+
+		let masterEmbedDescription = "";
+
+		Object.values(CommandHandler.commands).forEach((command: RBCommand) => {
+			// @ts-ignore -- yes, command.name does exist
+			masterEmbedDescription += `\`${command.name}\` | ${command.description}\n`;
+
+
+			// @ts-ignore -- yes
+			this.specificHelpEmbeds[command.name] = new MessageEmbed();
+			// @ts-ignore
+			this.specificHelpEmbeds[command.name].setColor("#7b42f5");
+			// @ts-ignore
+			this.specificHelpEmbeds[command.name].setTitle(command.friendlyName);
+			// @ts-ignore
+			this.specificHelpEmbeds[command.name].setDescription(`${command.description}\n\nUsage: \`${Bot.config.prefix}${command.usage}\``);
+		});
+
+
+		this.genericHelpCommand.setDescription(masterEmbedDescription.trim());
+		this.genericHelpCommand.setFooter(`Use "${Bot.config.prefix}help <command>" to see information on a specific command`);
 	}
 }

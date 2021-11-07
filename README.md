@@ -12,9 +12,8 @@ todo:
 - refactor into singular bot class to interact with (`const bot = new RandomBot();`)
 - aliases
 	- also make command usage case-insensitive
+		- this needs to apply to help command too
 - info command
-- make help command not recompute embeds every time
-	- utility embed class?
 - add a deleteRoleSave command
 - server specific prefixes
 - add default "timed" method to RBCommand, i.e. an implementation of what kill has
