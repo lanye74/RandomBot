@@ -4,6 +4,7 @@ import {MessageEmbed} from "discord.js";
 import RBCommand from "../RBCommand.js";
 
 import type {MessageCommand} from "../types.js";
+import { getPropertyReference } from "../util/reference.js";
 
 
 
@@ -30,14 +31,14 @@ export default class help extends RBCommand {
 		if(!args[0]) { // general help command
 			channel.send(this.genericHelpCommand);
 		} else {
-			const command = CommandHandler.commands[args[0]];
+			const commandEmbed = this.specificHelpEmbeds[args[0].toLowerCase()];
 
-			if(!command) {
+			if(!commandEmbed) {
 				channel.send("The command you're looking for doesn't exist.");
 				return;
 			}
 
-			channel.send(this.specificHelpEmbeds[args[0]]);
+			channel.send(commandEmbed);
 		}
 	}
 
@@ -53,10 +54,25 @@ export default class help extends RBCommand {
 			masterEmbedDescription += `\`${command.name}\` | ${command.description}\n`;
 
 
+			// --help [command name]
 			this.specificHelpEmbeds[command.name] = new MessageEmbed();
-			this.specificHelpEmbeds[command.name].setColor("#7b42f5");
-			this.specificHelpEmbeds[command.name].setTitle(command.friendlyName);
-			this.specificHelpEmbeds[command.name].setDescription(`${command.description}\n\nUsage: \`${Bot.config.prefix}${command.usage}\``);
+			const commandEmbed = getPropertyReference<MessageEmbed>(this.specificHelpEmbeds, command.name);
+
+			commandEmbed.setColor("#7b42f5");
+			commandEmbed.setTitle(`${command.friendlyName} Command`);
+
+			commandEmbed.addFields(
+				{name: "Description", value: command.description},
+				{name: "Usage", value: `\`${Bot.config.prefix}${command.usage}\``},
+				{name: "Aliases", value: command.aliases.join(", ") || "None"}
+			);
+
+
+			if(command.aliases) {
+				command.aliases.forEach(alias => {
+					this.specificHelpEmbeds[alias] = commandEmbed;
+				});
+			}
 		});
 
 

@@ -7,8 +7,6 @@ export type BotConfig = {
 	token: string
 };
 
-
-
 export type MessageCommand = {
 	args: string[],
 	channel: TextChannel,
@@ -19,3 +17,5 @@ export type MessageCommand = {
 	name: string,
 	sender: User
 };
+
+export type ObjectKey = string | symbol | number;
