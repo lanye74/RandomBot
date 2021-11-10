@@ -1,18 +1,9 @@
 import FSManager from "../FSManager.js";
-import RBCommand from "../RBCommand.js";
 import {GuildMember, MessageEmbed} from "discord.js"
+import RBCommand from "../RBCommand.js";
 
 import type {EmbedFieldData, Guild} from "discord.js";
-import type {MessageCommand} from "../types.js";
-
-
-
-type ParsedRoleSave = {
-	date: number,
-	members: string[]
-	roleID: string,
-	saveID: string,
-};
+import type {MessageCommand, ParsedRoleSave} from "../types.js";
 
 
 

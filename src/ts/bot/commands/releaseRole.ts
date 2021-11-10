@@ -1,4 +1,3 @@
-import Bot from "../Bot.js";
 import FSManager from "../FSManager.js";
 import RBCommand from "../RBCommand.js";
 

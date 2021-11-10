@@ -1,23 +1,9 @@
 import * as fs_bad from "fs-extra";
 import * as path from "path";
 // @ts-ignore
-const fs = fs_bad.default;
+const fs: fs_bad = fs_bad.default;
 
-
-
-type FSPromise = {
-	promise: Promise<any>,
-	resolve: Function,
-	reject: Function
-};
-
-type FSTask = {
-	promise: FSPromise,
-	method: Function,
-	path: string,
-	protectFile: number,
-	data: any[]
-};
+import type {FSPromise, FSTask} from "./types.js";
 
 
 
@@ -71,6 +57,7 @@ export default class FSManager {
 
 		if(this.queue.length === 1 && !this.operating) {
 			setTimeout(() => {this.process()}, 0);
+			// please don't ask me why I can't just do setTimeout(this.process, 0)
 		}
 
 		return this.queue[this.queue.length - 1].promise.promise;
@@ -100,7 +87,7 @@ export default class FSManager {
 				return false;
 			});
 		} else {
-			tasks = this.haltedQueue.filter((task, index) => { // verbose filter to capture index
+			tasks = this.haltedQueue.filter((task, index) => {
 				if(task.path === targetPath) {
 					targetIndexes.push(index);
 					return true;
@@ -126,9 +113,8 @@ export default class FSManager {
 		this.operating = true;
 
 		const object = this.queue.shift();
-
-
 		const {promise, method, path, protectFile, data} = object!;
+
 
 		// time to handle path protection
 

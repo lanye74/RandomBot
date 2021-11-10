@@ -8,17 +8,19 @@ yes i know this is hot garbage
 im trying ok
 
 todo:
-- electron
+- server specific prefixes
 - refactor into singular bot class to interact with (`const bot = new RandomBot();`)
-- make general help command use pages w/ fields, or completely reformat idk
+- add default "timed" method to RBCommand, i.e. an implementation of what kill has
+- make RBCommand an interface so that having the class there makes logical sense
+- electron
+
+commands:
 - info command
 	- changelog in db (make sure to read once like in version command)
 - add a deleteRoleSave command
-- server specific prefixes
-- add default "timed" method to RBCommand, i.e. an implementation of what kill has
-- make help command embed title generic (`Bot.config.name`?)
-- make RBCommand an interface so that having the class there makes logical sense
+- make general help command use pages w/ fields, or completely reformat idk
 - let spamPing spam images
+- make help command embed title generic (`Bot.config.name`?)
 
 
 

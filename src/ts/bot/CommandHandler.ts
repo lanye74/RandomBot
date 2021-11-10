@@ -56,11 +56,9 @@ export default class CommandHandler {
 
 		this.commands[lowerName] = command;
 
-		if(command.aliases.length > 0) {
-			command.aliases.forEach((alias: string) => {
-				this.aliases[alias.toLowerCase()] = this.commands[lowerName];
-			});
-		}
+		command.aliases.forEach((alias: string) => {
+			this.aliases[alias.toLowerCase()] = this.commands[lowerName];
+		});
 	}
 
 	static run(command: MessageCommand): void {

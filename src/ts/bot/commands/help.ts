@@ -1,10 +1,10 @@
 import Bot from "../Bot.js";
 import CommandHandler from "../CommandHandler.js";
+import {getPropertyReference} from "../util/reference.js";
 import {MessageEmbed} from "discord.js";
 import RBCommand from "../RBCommand.js";
 
 import type {MessageCommand} from "../types.js";
-import { getPropertyReference } from "../util/reference.js";
 
 
 
@@ -68,11 +68,9 @@ export default class help extends RBCommand {
 			);
 
 
-			if(command.aliases) {
-				command.aliases.forEach(alias => {
-					this.specificHelpEmbeds[alias] = commandEmbed;
-				});
-			}
+			command.aliases.forEach(alias => {
+				this.specificHelpEmbeds[alias] = commandEmbed;
+			});
 		});
 
 

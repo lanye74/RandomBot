@@ -1,12 +1,12 @@
 import CommandHandler from "./CommandHandler.js";
 import f from "./util/console.js";
 
-import type {Client, Message, TextChannel} from "discord.js";
 import type {BotConfig, MessageCommand} from "./types.js";
+import type {Client, Message, TextChannel} from "discord.js";
 
 
 
-export default class Bot { // thank god for static methods or this would be a plain object still
+export default class Bot {
 	static client: Client;
 	static config: BotConfig;
 

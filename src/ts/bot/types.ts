@@ -7,6 +7,26 @@ export type BotConfig = {
 	token: string
 };
 
+
+
+export type FSPromise = {
+	promise: Promise<any>,
+	resolve: Function,
+	reject: Function
+};
+
+
+
+export type FSTask = {
+	promise: FSPromise,
+	method: Function,
+	path: string,
+	protectFile: number,
+	data: any[]
+};
+
+
+
 export type MessageCommand = {
 	args: string[],
 	channel: TextChannel,
@@ -18,4 +38,19 @@ export type MessageCommand = {
 	sender: User
 };
 
+
+
 export type ObjectKey = string | symbol | number;
+
+
+
+export type ParsedRoleSave = {
+	date: number,
+	members: string[]
+	roleID: string,
+	saveID: string,
+};
+
+
+
+export type SpamTask = [string, number, TextChannel];

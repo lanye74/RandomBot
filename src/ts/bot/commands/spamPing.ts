@@ -1,8 +1,7 @@
 import RBCommand from "../RBCommand.js";
 import sleep from "../util/sleep.js";
 
-import type {MessageCommand} from "../types.js";
-import type {TextChannel} from "discord.js";
+import type {MessageCommand, SpamTask} from "../types.js";
 
 
 
@@ -12,7 +11,7 @@ export default class spamPing extends RBCommand {
 	static friendlyName = "Spam Ping";
 	static usage = "spamPing [mention user] <how many times> <optional text>";
 
-	private static queue: [string, number, TextChannel][] = [];
+	private static queue: SpamTask[] = [];
 	private static pinging: boolean = false;
 
 	static async run(command: MessageCommand): Promise<void> {
