@@ -9,7 +9,7 @@ export type BotConfig = {
 
 
 
-export type FSPromise = {
+export type FlexiblePromise = {
 	promise: Promise<any>,
 	resolve: Function,
 	reject: Function
@@ -18,7 +18,7 @@ export type FSPromise = {
 
 
 export type FSTask = {
-	promise: FSPromise,
+	promise: FlexiblePromise,
 	method: Function,
 	path: string,
 	protectFile: number,

@@ -20,7 +20,8 @@ export default class viewRoleSaves extends RBCommand {
 		embed.setColor("#7b42f5");
 
 
-		const json = await FSManager.call("readFile", "./db.json", [{encoding: "utf8"}]).then((file: string) => JSON.parse(file));
+		const json = await FSManager.call("readFile", "./serverSaves.json", [{encoding: "utf8"}])
+		.then((file: string) => JSON.parse(file));
 
 
 		if(!json.servers[guild.id]) {

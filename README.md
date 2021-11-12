@@ -21,6 +21,7 @@ commands:
 - make general help command use pages w/ fields, or completely reformat idk
 - let spamPing spam images
 - make help command embed title generic (`Bot.config.name`?)
+- generalize embed colors to a property on `Bot` (embed util?)
 
 
 

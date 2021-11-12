@@ -2,7 +2,7 @@ node_modules/
 src/js/
 
 config.json
-db.json
+serverSaves.json
 
 *.log
 logs/

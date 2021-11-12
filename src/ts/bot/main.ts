@@ -14,12 +14,12 @@ CommandHandler.loadCommands()
 .then(commands => CommandHandler.register(commands))
 .then(() => Bot.info("Commands loaded successfully."))
 .then(() => Bot.client.login(Bot.config.token))
-.catch((error: any) => Bot.error(`Error while logging in: ${error}`));
+.catch((error: any) => Bot.error(`Error while loading: ${error}`));
 
 
 
-if(!(await FSManager.call("exists", "./db.json"))) {
-	await FSManager.call("write", "./db.json", ["{\"servers\": {}"]);
+if(!(await FSManager.call("exists", "./serverSaves.json"))) {
+	await FSManager.call("write", "./serverSaves.json", ["{\"servers\": {}"]);
 }
 
 

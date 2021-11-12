@@ -14,7 +14,7 @@ export default class evaluate extends RBCommand {
 	static friendlyName = "Evaluate";
 	static usage = "evaluate <command>";
 
-	static run(command: MessageCommand) {
+	static run(command: MessageCommand): void {
 		if(command.sender.id !== "393898580177321985") {
 			command.channel.send("You don't have permission to use this.");
 			return;

@@ -1,6 +1,6 @@
 {
 	"name": "random-bot",
-	"version": "3.2.2",
+	"version": "3.2.3",
 	"description": "Funny bot",
 	"main": "main.js",
 	"type": "module",
@@ -9,7 +9,7 @@
 	"license": "MIT",
 	"dependencies": {
 		"discord.js": "^12.5.3",
-		"electron": "^15.3.0",
+		"electron": "^15.3.1",
 		"fs-extra": "^10.0.0"
 	},
 	"devDependencies": {

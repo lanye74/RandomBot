@@ -15,7 +15,7 @@ export default class version extends RBCommand {
 	static friendlyName = "Version";
 	static usage = "version";
 
-	static run(command: MessageCommand) {
+	static run(command: MessageCommand): void {
 		command.channel.send(`Current bot version: ${this.botVersion}`);
 	}
 }

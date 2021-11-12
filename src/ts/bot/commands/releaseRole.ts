@@ -25,12 +25,12 @@ export default class releaseRole extends RBCommand {
 
 
 		const fileWriteID = FSManager.generateProtectiveID();
-		const json = await FSManager.call("readFile", "./db.json", [{encoding: "utf8"}], fileWriteID).then((file: string) => JSON.parse(file));
+		const json = await FSManager.call("readFile", "./serverSaves.json", [{encoding: "utf8"}], fileWriteID).then((file: string) => JSON.parse(file));
 
 
 		if(!json.servers[guild.id]) {
 			channel.send("This server has no saves.");
-			FSManager.release("./db.json", fileWriteID);
+			FSManager.release("./serverSaves.json", fileWriteID);
 			return;
 		}
 
@@ -41,7 +41,7 @@ export default class releaseRole extends RBCommand {
 
 		if(!saveDataCompressed) {
 			channel.send("There is no save under this ID.");
-			FSManager.release("./db.json", fileWriteID);
+			FSManager.release("./serverSaves.json", fileWriteID);
 			return;
 		}
 
@@ -50,7 +50,7 @@ export default class releaseRole extends RBCommand {
 
 
 		const newJSON = JSON.stringify(json, null, "\t");
-		await FSManager.call("writeFile", "./db.json", [newJSON], fileWriteID);
+		await FSManager.call("writeFile", "./serverSaves.json", [newJSON], fileWriteID);
 
 
 		const saveData = saveDataCompressed.split("\n");
@@ -63,7 +63,7 @@ export default class releaseRole extends RBCommand {
 
 		if(!role) {
 			channel.send("The role you're trying to release no longer exists.");
-			FSManager.release("./db.json", fileWriteID);
+			FSManager.release("./serverSaves.json", fileWriteID);
 			return;
 		}
 

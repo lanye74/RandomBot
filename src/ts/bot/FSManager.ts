@@ -1,28 +1,10 @@
+import {createFlexiblePromise} from "./util/createFlexiblePromise.js";
 import * as fs_bad from "fs-extra";
 import * as path from "path";
 // @ts-ignore
 const fs: fs_bad = fs_bad.default;
 
-import type {FSPromise, FSTask} from "./types.js";
-
-
-
-function createFSPromise(): FSPromise {
-	let resolve, reject;
-
-	const promise = new Promise((pResolve, pReject) => {
-		resolve = pResolve;
-		reject = pReject;
-	});
-
-	return {
-		promise,
-		// @ts-ignore -- yes, it's fine
-		resolve,
-		// @ts-ignore
-		reject
-	}
-}
+import type {FSTask} from "./types.js";
 
 
 
@@ -38,7 +20,7 @@ export default class FSManager {
 	private static protectID: number = 1;
 
 	static async call(operation: string, pathToOperate: string, data: any[] = [], fileProtector: number = 0): Promise<any> {
-		const promise = createFSPromise();
+		const promise = createFlexiblePromise();
 
 		const method = fs[operation];
 

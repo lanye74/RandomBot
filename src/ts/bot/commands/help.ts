@@ -1,6 +1,6 @@
 import Bot from "../Bot.js";
 import CommandHandler from "../CommandHandler.js";
-import {getPropertyReference} from "../util/reference.js";
+import {getObjectReference, getPropertyReference} from "../util/reference.js";
 import {MessageEmbed} from "discord.js";
 import RBCommand from "../RBCommand.js";
 
@@ -16,15 +16,15 @@ export default class help extends RBCommand {
 
 	static genericHelpCommand = new MessageEmbed();
 	static specificHelpEmbeds: {[name: string]: MessageEmbed} = {};
-	static embedInitted = false;
+	static embedsGenerated = false;
 
 	static run(command: MessageCommand): void {
 		const {args, channel} = command;
 
 
-		if(!this.embedInitted) {
-			this.initEmbeds();
-			this.embedInitted = true;
+		if(!this.embedsGenerated) {
+			this.generateEmbeds();
+			this.embedsGenerated = true;
 		}
 
 
@@ -42,11 +42,13 @@ export default class help extends RBCommand {
 		}
 	}
 
-	static initEmbeds(): void {
+	static generateEmbeds(): void {
 		// arg-less help command
+		const masterEmbed = getObjectReference<MessageEmbed>(this.genericHelpCommand);
 
-		this.genericHelpCommand.setColor("#7b42f5");
-		this.genericHelpCommand.setTitle("Commands for Lanye's Utilities");
+
+		masterEmbed.setColor("#7b42f5");
+		masterEmbed.setTitle("Commands for Lanye's Utilities");
 
 		let masterEmbedDescription = "";
 
@@ -74,7 +76,7 @@ export default class help extends RBCommand {
 		});
 
 
-		this.genericHelpCommand.setDescription(masterEmbedDescription.trim());
-		this.genericHelpCommand.setFooter(`Use "${Bot.config.prefix}help <command>" to see information on a specific command`);
+		masterEmbed.setDescription(masterEmbedDescription.trim());
+		masterEmbed.setFooter(`Use "${Bot.config.prefix}help <command>" to see information on a specific command`);
 	}
 }
