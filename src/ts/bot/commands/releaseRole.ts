@@ -28,7 +28,7 @@ export default class releaseRole extends RBCommand {
 		const json = await FSManager.call("readFile", "./serverSaves.json", [{encoding: "utf8"}], fileWriteID).then((file: string) => JSON.parse(file));
 
 
-		if(!json.servers[guild.id]) {
+		if(!json[guild.id]) {
 			channel.send("This server has no saves.");
 			FSManager.release("./serverSaves.json", fileWriteID);
 			return;
@@ -37,7 +37,7 @@ export default class releaseRole extends RBCommand {
 		const saveLookup = args[0];
 
 
-		const saveDataCompressed = json.servers[guild.id].roleSaves[saveLookup];
+		const saveDataCompressed = json[guild.id][saveLookup];
 
 		if(!saveDataCompressed) {
 			channel.send("There is no save under this ID.");
@@ -46,7 +46,7 @@ export default class releaseRole extends RBCommand {
 		}
 
 
-		delete json.servers[guild.id].roleSaves[saveLookup];
+		delete json[guild.id][saveLookup];
 
 
 		const newJSON = JSON.stringify(json, null, "\t");

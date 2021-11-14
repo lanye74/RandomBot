@@ -68,11 +68,11 @@ export default class suspendRole extends RBCommand {
 
 		const json = await FSManager.call("readFile", "./serverSaves.json", [{encoding: "utf8"}], fileWriteID).then((file: string) => JSON.parse(file));
 
-		if(!json.servers[guild.id]) {
-			json.servers[guild.id] = {roleSaves: {}};
+		if(!json[guild.id]) {
+			json[guild.id] = {};
 		}
 
-		json.servers[guild.id].roleSaves[saveName] = saveData;
+		json[guild.id][saveName] = saveData;
 
 		const newJSON = JSON.stringify(json, null, "\t");
 		await FSManager.call("writeFile", "./serverSaves.json", [newJSON], fileWriteID);

@@ -24,13 +24,13 @@ export default class viewRoleSaves extends RBCommand {
 		.then((file: string) => JSON.parse(file));
 
 
-		if(!json.servers[guild.id]) {
+		if(!json[guild.id]) {
 			channel.send("This server has no saves.");
 			return;
 		}
 
 
-		const serverSaves = <Object>json.servers[guild.id].roleSaves;
+		const serverSaves = <Object>json[guild.id];
 
 		let parsedSaves: ParsedRoleSave[] = this.parseSaves(serverSaves);
 

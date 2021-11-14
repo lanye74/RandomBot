@@ -26,16 +26,15 @@ export default class info extends RBCommand {
 		}
 
 
-		channel.send(this.infoEmbed);
+		// channel.send(this.infoEmbed);
 	}
 
 	static async generateEmbed(): Promise<void> {
 		const embed = getObjectReference<MessageEmbed>(this.infoEmbed);
 
 		const botVersion = await FSManager.call("readFile", "./package.json", [{encoding: "utf8"}])
-		.then(json => JSON.parse(json))
-		.then(parsedJSON => parsedJSON.version);
+		.then(json => JSON.parse(json).version);
 
-		console.log(botVersion);
+		// possibly store bot data in static object too
 	}
 }
