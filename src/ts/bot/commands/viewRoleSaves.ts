@@ -52,7 +52,7 @@ export default class viewRoleSaves extends RBCommand {
 			embed.setFooter(`Page 1/${Math.ceil(parsedSaves.length / 10)}`);
 
 			channel.send(embed);
-		} else if(args[0] === "page") {
+		} else if(args[0] === "page" || args[0] === "p") {
 			const pages = Math.ceil(parsedSaves.length / 10);
 			let pageIndex = parseInt(args[1]);
 
@@ -78,7 +78,7 @@ export default class viewRoleSaves extends RBCommand {
 			embed.setFooter(`Page ${pageIndex}/${pages}`);
 
 			channel.send(embed);
-		} else if(args[0] === "id") {
+		} else if(args[0] === "id" || args[0] === "info") {
 			const save = parsedSaves.filter(save => save.saveID === args[1])[0];
 
 			if(!save) {
@@ -103,8 +103,8 @@ export default class viewRoleSaves extends RBCommand {
 			embed.setTitle(`Save ${save.saveID}`);
 			embed.addFields(
 				{name: "Role Name", value: await this.resolveRoleName(save.roleID, guild)},
-				{name: "Date", value: (new Date(save.date).toLocaleString() + " EST")},
-				{name: "Members", value: tagsList.join("\n")}
+				{name: "Date Saved", value: (new Date(save.date).toLocaleString("default", {dateStyle: "medium", timeStyle: "long"}))},
+				{name: "Members", value: tagsList.join("\n").trim()}
 			);
 
 
