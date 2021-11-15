@@ -30,7 +30,7 @@ export default class info extends RBCommand {
 	}
 
 	static async generateEmbed(): Promise<void> {
-		const embed = getObjectReference<MessageEmbed>(this.infoEmbed);
+		const embed = getObjectReference(this.infoEmbed);
 
 		const botVersion = await FSManager.call("readFile", "./package.json", [{encoding: "utf8"}])
 		.then(json => JSON.parse(json).version);

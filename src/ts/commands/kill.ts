@@ -36,7 +36,7 @@ export default class kill extends RBCommand {
 		}
 	}
 
-	static async initiateTimeout(channel: TextChannel): Promise<void> {
+	private static async initiateTimeout(channel: TextChannel): Promise<void> {
 		await sleep(10000);
 
 		channel.send("Request timed out.");

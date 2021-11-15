@@ -1,5 +1,7 @@
 import type {FlexiblePromise} from "../types.js";
 
+
+
 export function createFlexiblePromise(): FlexiblePromise {
 	let resolve: Function, reject: Function;
 

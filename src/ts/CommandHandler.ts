@@ -15,7 +15,7 @@ export default class CommandHandler {
 		const commandLoaders: Function[] = [];
 
 
-		const commands: string[] = await FSManager.call("readdir", "./src/js/bot/commands")
+		const commands: string[] = await FSManager.call("readdir", "./src/js/commands")
 		.then((files: string[]) => files.filter((file: string) => file.split(".")[1] === "js")); // only js files, not .d.ts
 
 
@@ -39,10 +39,7 @@ export default class CommandHandler {
 
 	static register(input: any | any[]) { // type checking is ridiculous because the type of a module is typeof import(module)
 		if(input instanceof Array) {
-			input.forEach(command => {
-				// Bot.info(`(${number}/${commands.length}) Loaded ${command.default.name}.`);
-				this.setCommand(command);
-			});
+			input.map(command => this.setCommand(command));
 		} else {
 			this.setCommand(input);
 		}
@@ -61,13 +58,12 @@ export default class CommandHandler {
 		});
 	}
 
-	static run(command: MessageCommand): void {
+	static handle(command: MessageCommand): void {
 		const commandFunction: RBCommand | undefined = this.allCommands[command.name];
 
 
 		if(!commandFunction) {
 			command.channel.send("The command you're trying to use doesn't exist.");
-			return;
 		} else {
 			commandFunction.run(command);
 		}

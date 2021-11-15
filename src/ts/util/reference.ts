@@ -1,8 +1,4 @@
-import type {ObjectKey} from "../types";
-
-
-
-export function getObjectReference<T>(object: {[key: ObjectKey]: any}): T {
+export function getObjectReference<T>(object: T): T {
 	return {
 		get value(): any {
 			return object;
@@ -16,7 +12,7 @@ export function getObjectReference<T>(object: {[key: ObjectKey]: any}): T {
 
 
 
-export function getPropertyReference<T>(object: {[key: ObjectKey]: any}, prop: ObjectKey): T {
+export function getPropertyReference<O extends {[key: PropertyKey]: any}, K extends keyof O>(object: O, prop: K): O[K] {
 	return {
 		get value(): any {
 			return object[prop];

@@ -29,7 +29,7 @@ export default class Bot {
 		};
 
 
-		CommandHandler.run(command);
+		CommandHandler.handle(command);
 	}
 
 	static log(...args: string[]): void {

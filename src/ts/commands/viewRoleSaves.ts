@@ -72,7 +72,7 @@ export default class viewRoleSaves extends RBCommand {
 
 			const saves = parsedSaves.slice(10 * (pageIndex - 1), 10 * pageIndex);
 
-			embed.addFields(...(await this.savesToFields(saves, guild)));
+			embed.addFields(await this.savesToFields(saves, guild));
 
 			embed.setTitle(`Page ${pageIndex} of Server Saves`);
 			embed.setFooter(`Page ${pageIndex}/${pages}`);
@@ -115,7 +115,7 @@ export default class viewRoleSaves extends RBCommand {
 		}
 	}
 
-	static parseSaves(raw: Object) {
+	private static parseSaves(raw: Object) {
 		const out: ParsedRoleSave[] = [];
 
 
@@ -132,7 +132,7 @@ export default class viewRoleSaves extends RBCommand {
 		return out;
 	}
 
-	static async savesToFields(saves: ParsedRoleSave[], guild: Guild): Promise<EmbedFieldData[]> {
+	private static async savesToFields(saves: ParsedRoleSave[], guild: Guild): Promise<EmbedFieldData[]> {
 		const queue: Function[] = [];
 
 		saves.forEach(save => {
@@ -142,7 +142,7 @@ export default class viewRoleSaves extends RBCommand {
 		return Promise.all(queue.map(field => field()));
 	}
 
-	static async loadRoleField(save: ParsedRoleSave, guild: Guild): Promise<any> {
+	private static async loadRoleField(save: ParsedRoleSave, guild: Guild): Promise<EmbedFieldData> {
 		return new Promise(async resolve => {
 			const role = await this.resolveRoleName(save.roleID, guild);
 
@@ -150,7 +150,7 @@ export default class viewRoleSaves extends RBCommand {
 		});
 	}
 
-	static async resolveRoleName(id: string, guild: Guild): Promise<string> {
+	private static async resolveRoleName(id: string, guild: Guild): Promise<string> {
 		const discordRole = await guild.roles.fetch(id);
 		let role = discordRole!.name;
 

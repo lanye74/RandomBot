@@ -40,10 +40,6 @@ export type MessageCommand = {
 
 
 
-export type ObjectKey = string | symbol | number;
-
-
-
 export type ParsedRoleSave = {
 	date: number,
 	members: string[]

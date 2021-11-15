@@ -42,9 +42,9 @@ export default class help extends RBCommand {
 		}
 	}
 
-	static generateEmbeds(): void {
+	private static generateEmbeds(): void {
 		// arg-less help command
-		const masterEmbed = getObjectReference<MessageEmbed>(this.genericHelpCommand);
+		const masterEmbed = getObjectReference(this.genericHelpCommand);
 
 
 		masterEmbed.setColor("#7b42f5");
@@ -58,7 +58,7 @@ export default class help extends RBCommand {
 
 			// --help [command name]
 			this.specificHelpEmbeds[command.name] = new MessageEmbed();
-			const commandEmbed = getPropertyReference<MessageEmbed>(this.specificHelpEmbeds, command.name);
+			const commandEmbed = getPropertyReference(this.specificHelpEmbeds, command.name);
 
 			commandEmbed.setColor("#7b42f5");
 			commandEmbed.setTitle(`${command.friendlyName} Command`);

@@ -13,13 +13,13 @@ export default class FSManager {
 	private static operating: boolean = false;
 
 	private static thisPath = import.meta.url.split("/");
-	private static basePath = this.thisPath.slice(3, this.thisPath.length - 4).join("/"); // cuts off the file:/// and backtracks from src/js/bot/FSManager.ts
+	private static basePath = this.thisPath.slice(3, this.thisPath.length - 3).join("/"); // cuts off the file:/// and backtracks from src/js/FSManager.ts
 
 	private static protectedFiles: Map<string, number> = new Map();
 	private static haltedQueue: FSTask[] = []; // holds tasks that are waiting to write to a protected file
 	private static protectID: number = 1;
 
-	static async call(operation: string, pathToOperate: string, data: any[] = [], fileProtector: number = 0): Promise<any> {
+	static async call<T = any>(operation: string, pathToOperate: string, data: any[] = [], fileProtector: number = 0): Promise<T> {
 		const promise = createFlexiblePromise();
 
 		const method = fs[operation];

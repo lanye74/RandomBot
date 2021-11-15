@@ -1,1 +1,1 @@
-import "./src/js/bot/main.js";
+import "./src/js/main.js";
