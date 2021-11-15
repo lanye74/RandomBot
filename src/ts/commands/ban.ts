@@ -53,7 +53,7 @@ export default class ban extends RBCommand {
 			return;
 		}
 
-		if(invoker.guild.owner === invoker) {
+		if(invoker.guild.ownerId === invoker.id) {
 			channel.send(`${target.user.tag} was banned${(banOptions) ? `for ${banOptions}.` : "."}`);
 			target.ban(banOptions);
 			return;

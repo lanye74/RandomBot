@@ -29,7 +29,7 @@ export default class help extends RBCommand {
 
 
 		if(!args[0]) { // general help command
-			channel.send(this.genericHelpCommand);
+			channel.send({embeds: [this.genericHelpCommand]});
 		} else {
 			const commandEmbed = this.specificHelpEmbeds[args[0].toLowerCase()];
 
@@ -38,7 +38,7 @@ export default class help extends RBCommand {
 				return;
 			}
 
-			channel.send(commandEmbed);
+			channel.send({embeds: [commandEmbed]});
 		}
 	}
 

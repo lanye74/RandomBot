@@ -32,7 +32,7 @@ export default class kick extends RBCommand {
 			return;
 		}
 
-		if(invoker.guild.owner === invoker) {
+		if(invoker.guild.ownerId === invoker.id) {
 			channel.send(`${target.user.tag} was kicked${(reason) ? `for ${reason}.` : "."}`);
 			target.kick(reason);
 			return;

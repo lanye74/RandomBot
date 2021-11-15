@@ -7,7 +7,12 @@ import FSManager from "./FSManager.js";
 
 Bot.config = JSON.parse(await FSManager.call("readFile", "./config.json", [{encoding: "utf8"}]));
 
-Bot.client = new Discord.Client();
+Bot.client = new Discord.Client({
+	intents: ["GUILDS", "GUILD_MEMBERS", "GUILD_BANS", "GUILD_MESSAGES"],
+	presence: {
+		activities: [{name: `${Bot.config.prefix}help`, type: "LISTENING"}]
+	}
+});
 
 
 CommandHandler.loadCommands()
@@ -27,10 +32,10 @@ if(!(await FSManager.call("exists", "./serverSaves.json"))) {
 Bot.client.on("ready", () => {
 	Bot.log("", "Bold", "Ready.");
 
-	Bot.client.user!.setActivity(`${Bot.config.prefix}help`, {type: "LISTENING"});
+	// Bot.client.user!.setActivity();
 
 	// setup handler for messages
-	Bot.client.on("message", handleMessage);
+	Bot.client.on("messageCreate", handleMessage);
 });
 
 

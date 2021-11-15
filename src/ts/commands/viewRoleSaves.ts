@@ -37,7 +37,7 @@ export default class viewRoleSaves extends RBCommand {
 
 		if(parsedSaves.length === 0) {
 			embed.setDescription("This server has no saves.");
-			channel.send(embed);
+			channel.send({embeds: [embed]});
 			return;
 		}
 
@@ -51,7 +51,7 @@ export default class viewRoleSaves extends RBCommand {
 			embed.setTitle(`Server Saves`);
 			embed.setFooter(`Page 1/${Math.ceil(parsedSaves.length / 10)}`);
 
-			channel.send(embed);
+			channel.send({embeds: [embed]});
 		} else if(args[0] === "page" || args[0] === "p") {
 			const pages = Math.ceil(parsedSaves.length / 10);
 			let pageIndex = parseInt(args[1]);
@@ -77,7 +77,7 @@ export default class viewRoleSaves extends RBCommand {
 			embed.setTitle(`Page ${pageIndex} of Server Saves`);
 			embed.setFooter(`Page ${pageIndex}/${pages}`);
 
-			channel.send(embed);
+			channel.send({embeds: [embed]});
 		} else if(args[0] === "id" || args[0] === "info") {
 			const save = parsedSaves.filter(save => save.saveID === args[1])[0];
 
@@ -108,7 +108,7 @@ export default class viewRoleSaves extends RBCommand {
 			);
 
 
-			channel.send(embed);
+			channel.send({embeds: [embed]});
 		} else {
 			channel.send("You didn't specify valid a valid first argument.");
 			return;
