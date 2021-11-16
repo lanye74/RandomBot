@@ -30,7 +30,7 @@ export default class viewRoleSaves extends RBCommand {
 		}
 
 
-		const serverSaves = <Object>json[guild.id];
+		const serverSaves = <object>json[guild.id];
 
 		let parsedSaves: ParsedRoleSave[] = this.parseSaves(serverSaves);
 

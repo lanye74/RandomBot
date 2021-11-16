@@ -12,7 +12,7 @@ export function getObjectReference<T>(object: T): T {
 
 
 
-export function getPropertyReference<O extends {[key: PropertyKey]: any}, K extends keyof O>(object: O, prop: K): O[K] {
+export function getPropertyReference<O extends object, K extends keyof O>(object: O, prop: K): O[K] {
 	return {
 		get value(): any {
 			return object[prop];
