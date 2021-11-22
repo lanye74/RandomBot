@@ -4,7 +4,7 @@ import * as path from "path";
 // @ts-ignore
 const fs: fs_bad = fs_bad.default;
 
-import type {FSTask} from "./types.js";
+import type {FSTask} from "./types/types.js";
 
 
 

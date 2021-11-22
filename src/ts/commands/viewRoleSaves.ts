@@ -3,7 +3,7 @@ import {GuildMember, MessageEmbed} from "discord.js"
 import RBCommand from "../RBCommand.js";
 
 import type {EmbedFieldData, Guild} from "discord.js";
-import type {MessageCommand, ParsedRoleSave} from "../types.js";
+import type {MessageCommand, ParsedRoleSave} from "../types/types.js";
 
 
 

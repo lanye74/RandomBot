@@ -15,7 +15,8 @@ Bot.client = new Discord.Client({
 });
 
 
-CommandHandler.loadCommands()
+
+CommandHandler.loadCommands("./src/js/commands")
 .then(commands => CommandHandler.register(commands))
 .then(() => Bot.info("Commands loaded successfully."))
 .then(() => Bot.client.login(Bot.config.token))

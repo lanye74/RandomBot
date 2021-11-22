@@ -1,7 +1,7 @@
 import RBCommand from "../RBCommand.js";
 import sleep from "../util/sleep.js";
 
-import type {MessageCommand, SpamTask} from "../types.js";
+import type {MessageCommand, SpamTask} from "../types/types.js";
 
 
 

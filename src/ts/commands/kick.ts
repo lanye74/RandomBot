@@ -1,6 +1,6 @@
 import RBCommand from "../RBCommand.js";
 
-import type {MessageCommand} from "../types.js";
+import type {MessageCommand} from "../types/types.js";
 
 
 
@@ -32,7 +32,7 @@ export default class kick extends RBCommand {
 			return;
 		}
 
-		if(invoker.guild.ownerId === invoker.id) {
+		if(guild.ownerId === invoker.id) {
 			channel.send(`${target.user.tag} was kicked${(reason) ? `for ${reason}.` : "."}`);
 			target.kick(reason);
 			return;

@@ -1,7 +1,7 @@
 import FSManager from "../FSManager.js";
 import RBCommand from "../RBCommand.js";
 
-import type {MessageCommand} from "../types.js";
+import type {MessageCommand} from "../types/types.js";
 
 
 

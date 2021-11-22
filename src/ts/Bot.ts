@@ -1,7 +1,7 @@
 import CommandHandler from "./CommandHandler.js";
 import f from "./util/console.js";
 
-import type {BotConfig, MessageCommand} from "./types.js";
+import type {BotConfig, MessageCommand} from "./types/types.js";
 import type {Client, Message, TextChannel} from "discord.js";
 
 

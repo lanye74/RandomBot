@@ -1,4 +1,4 @@
-import type {FlexiblePromise} from "../types.js";
+import type {FlexiblePromise} from "../types/types.js";
 
 
 

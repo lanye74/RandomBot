@@ -4,7 +4,7 @@ import {getObjectReference, getPropertyReference} from "../util/reference.js";
 import {MessageEmbed} from "discord.js";
 import RBCommand from "../RBCommand.js";
 
-import type {MessageCommand} from "../types.js";
+import type {MessageCommand} from "../types/types.js";
 
 
 

@@ -1,4 +1,6 @@
-import type {Client, Guild, Message, TextChannel, User} from "discord.js";
+import {RandomBotIntentPresets} from "./consts.js";
+
+import type {Client, Guild, IntentsString, Message, TextChannel, User} from "discord.js";
 
 
 
@@ -46,6 +48,24 @@ export type ParsedRoleSave = {
 	roleID: string,
 	saveID: string,
 };
+
+
+
+export type RandomBotConfig = {
+	token: string;
+	prefix: string;
+};
+
+
+
+export type RandomBotInitOptions = {
+	intents: number | RandomBotIntentPreset | IntentsString[];
+	configLocation: string;
+};
+
+
+
+export type RandomBotIntentPreset = keyof typeof RandomBotIntentPresets;
 
 
 

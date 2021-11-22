@@ -4,7 +4,7 @@ import bot_class from "../Bot.js"; // for use in the eval command if needed
 import command_handler_class from "../CommandHandler.js";
 import fsmanager_class from "../FSManager.js";
 
-import type {MessageCommand} from "../types.js";
+import type {MessageCommand} from "../types/types.js";
 
 
 
@@ -24,10 +24,30 @@ export default class evaluate extends RBCommand {
 		const CommandHandler = command_handler_class;
 		const FSManager = fsmanager_class;
 
-		try {
-			eval(command.args.join(" "));
-		} catch(error: any) {
-			command.channel.send(`${error.name}: ${error.message}`);
+
+		if(command.args[0] === "ls" && command.args[1]) {
+			try {
+				command.args.shift();
+
+				const result = eval(command.args.join(" "));
+
+				if(!result || !result.length || result.length > 2000) {
+					command.channel.send(`Message data ${result.length - 2000} characters too long. Sending in console instead.`);
+					Bot.info(result);
+
+					return;
+				}
+
+				command.channel.send(result);
+			} catch(error: any) {
+				command.channel.send(`${error.name}: ${error.message}`);
+			}
+		} else {
+			try {
+				eval(command.args.join(" "));
+			} catch(error: any) {
+				command.channel.send(`${error.name}: ${error.message}`);
+			}
 		}
 	}
 }

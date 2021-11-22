@@ -1,7 +1,7 @@
 import RBCommand from "../RBCommand.js";
 
 import type {BanOptions} from "discord.js";
-import type {MessageCommand} from "../types.js";
+import type {MessageCommand} from "../types/types.js";
 
 
 
@@ -53,7 +53,7 @@ export default class ban extends RBCommand {
 			return;
 		}
 
-		if(invoker.guild.ownerId === invoker.id) {
+		if(guild.ownerId === invoker.id) {
 			channel.send(`${target.user.tag} was banned${(banOptions) ? `for ${banOptions}.` : "."}`);
 			target.ban(banOptions);
 			return;

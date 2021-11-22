@@ -1,7 +1,7 @@
 import Bot from "./Bot.js";
 import FSManager from "./FSManager.js";
 
-import type {MessageCommand} from "./types.js";
+import type {MessageCommand} from "./types/types.js";
 import type RBCommand from "./RBCommand.js";
 
 
@@ -11,11 +11,17 @@ export default class CommandHandler {
 	static aliases: {[name: string]: RBCommand} = {};
 	static allCommands: {[name: string]: RBCommand} = {};
 
-	static async loadCommands(): Promise<any> {
+	static async loadCommands(from: string): Promise<any> {
 		const commandLoaders: Function[] = [];
 
 
-		const commands: string[] = await FSManager.call("readdir", "./src/js/commands")
+		if(!(await FSManager.call("exists", from))) {
+			Bot.error("Invalid location to read files from.");
+			return;
+		}
+
+
+		const commands: string[] = await FSManager.call("readdir", from)
 		.then((files: string[]) => files.filter((file: string) => file.split(".")[1] === "js")); // only js files, not .d.ts
 
 
