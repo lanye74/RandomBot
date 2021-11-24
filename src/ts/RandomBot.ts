@@ -1,41 +1,73 @@
-import {Client as DiscordClient, ClientEvents} from "discord.js";
+import {Client as DiscordClient, ClientEvents, IntentsString, Intents} from "discord.js";
 import Bot from "./Bot.js";
 import FSManager from "./FSManager.js";
 import {RandomBotIntentPresets} from "./types/consts.js";
 
-import type {RandomBotConfig, RandomBotInitOptions} from "./types/types.js";
+import type {RandomBotConfig, RandomBotInitOptions, RandomBotIntentPreset} from "./types/types.js";
 
 
 
 export class RandomBot {
-	client: DiscordClient;
+	client!: DiscordClient;
 	config!: RandomBotConfig;
+	intents!: Set<IntentsString> | Intents;
 
 	constructor(options: RandomBotInitOptions) {
-		// add preset configs for intents
+		this.initConfig(options.configLocation);
+		this.configureIntents(options.intents, options.intentsBitField, options.intentsPresets);
+	}
 
-		if(typeof options.intents === "string") {
-			if(!RandomBotIntentPresets[options.intents]) {
-				throw new Error("Invalid intent preset.");
+	configureIntents(manualIntents?: IntentsString[], bitfield?: number, intentPresets?: RandomBotIntentPreset[]): void | Error {
+		if(bitfield) {
+			this.intents = new Intents(bitfield);
+			return;
+		}
+
+
+		this.intents = new Set<IntentsString>();
+
+
+		if(manualIntents) {
+			for(const intent of manualIntents) {
+				this.intents.add(intent);
 			}
+		}
 
-			this.client = new DiscordClient({intents: RandomBotIntentPresets[options.intents]});
-		} else if(typeof options.intents === "object" || typeof options.intents === "number") {
-			this.client = new DiscordClient({intents: options.intents});
-		} else {
-			throw new Error("Bot intents is not a preset, intent array, or bitfield.");
+		if(intentPresets) { // ew code
+			for(const preset of intentPresets) {
+				if(!RandomBotIntentPresets[preset]) {
+					throw new Error("Invalid intent preset.");
+				}
+
+				for(const intent of RandomBotIntentPresets[preset]) {
+					this.intents.add(intent);
+				}
+			}
+		}
+
+
+		if(this.intents.size === 0) {
+			throw new Error("No intents were provided.");
 		}
 	}
 
-	async init(configLocation: string): Promise<void | Error> {
+	async initConfig(configLocation: string): Promise<void | Error> {
 		if(!(await FSManager.call("exists", configLocation))) {
-			return new Error("Invalid config file location.");
+			throw new Error("Invalid config file location.");
 		}
 
 		this.config = await FSManager.call("read", configLocation, [{encoding: "utf8"}]).then(data => JSON.parse(data));
 	}
 
 	start(): void {
+		if(this.intents instanceof Intents) {
+			this.client = new DiscordClient({intents: this.intents});
+		} else {
+			this.client = new DiscordClient({intents: Array.from(this.intents)})
+		}
+
+
+
 		this.client.login(this.config.token);
 
 		this.client.on("ready", () => {
@@ -43,7 +75,7 @@ export class RandomBot {
 		});
 	}
 
-	setListener(what: keyof ClientEvents, callback: Function): void {
-		this.client.on(what, <any>callback);
+	setListener<K extends keyof ClientEvents>(what: K, callback: ((...args: ClientEvents[K]) => any)): void {
+		this.client.on(what, callback);
 	}
 }

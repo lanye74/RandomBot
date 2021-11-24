@@ -3,9 +3,10 @@ import {RandomBot} from "./RandomBot";
 
 
 const bot = new RandomBot({
-	intents: "PRESET_GUILD_ALL",
+	intentsPresets: ["PRESET_GUILD_ALL"],
 	configLocation: "./config.json"
 });
+
 
 
 bot.start();
