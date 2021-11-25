@@ -1,4 +1,4 @@
-import {createFlexiblePromise} from "./util/createFlexiblePromise.js";
+import createFlexiblePromise from "./util/createFlexiblePromise.js";
 import * as fs_bad from "fs-extra";
 import * as path from "path";
 // @ts-ignore

@@ -1,8 +1,8 @@
 {
 	"name": "random-bot",
-	"version": "3.2.6",
+	"version": "4.0.0",
 	"description": "Funny bot",
-	"main": "main.js",
+	"main": "src/js/main.js",
 	"type": "module",
 	"scripts": {},
 	"author": "Layne Ogden",

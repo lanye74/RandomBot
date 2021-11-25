@@ -8,7 +8,7 @@ import type {RandomBotConfig, RandomBotInitOptions, RandomBotIntentPreset} from 
 
 
 
-export class RandomBot {
+export default class RandomBot {
 	client!: DiscordClient;
 	config!: RandomBotConfig;
 	intents!: Set<IntentsString> | Intents;

@@ -2,7 +2,7 @@ import type {FlexiblePromise} from "../types/types.js";
 
 
 
-export function createFlexiblePromise(): FlexiblePromise {
+export default function createFlexiblePromise(): FlexiblePromise {
 	let resolve: Function, reject: Function;
 
 	const promise = new Promise((pResolve, pReject) => {
