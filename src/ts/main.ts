@@ -11,6 +11,8 @@ import sleep from "./util/sleep.js";
 import * as consts from "./types/consts.js";
 import * as types from "./types/types.js";
 
+import RBCommand from "./RBCommand.js";
+
 
 
 export {FSManager};
@@ -26,3 +28,5 @@ export {sleep};
 
 export {consts};
 export {types};
+
+export {RBCommand};
