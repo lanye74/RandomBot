@@ -1,5 +1,5 @@
 import {Client as DiscordClient, ClientEvents, IntentsString, Intents} from "discord.js";
-import Bot from "./Bot.js";
+import Logger from "./Logger.js";
 import CommandHandler from "./CommandHandler.js";
 import FSManager from "./FSManager.js";
 import {RandomBotIntentPresets} from "./types/consts.js";
@@ -69,7 +69,7 @@ export class RandomBot {
 
 	async start(): Promise<void> {
 		this.client.on("ready", () => {
-			Bot.log("", "Bold", "Ready.");
+			Logger.log("", "Bold", "Ready.");
 		});
 
 
@@ -81,10 +81,7 @@ export class RandomBot {
 	}
 
 	async createCommandListener(where: string): Promise<void> {
-		CommandHandler.loadCommands(where)
-		.then(commands => CommandHandler.register(commands))
-		.then(() => Bot.info("Commands loaded successfully."))
-		.catch((error: any) => Bot.error(`Error while loading: ${error}`));
+		CommandHandler.loadCommands(where);
 
 
 		this.addListener("messageCreate", message => {

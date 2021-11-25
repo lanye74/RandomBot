@@ -1,4 +1,4 @@
-import Bot from "../Bot.js";
+import Logger from "../Logger.js";
 import CommandHandler from "../CommandHandler.js";
 import {getObjectReference, getPropertyReference} from "../util/reference.js";
 import {MessageEmbed} from "discord.js";
@@ -23,7 +23,7 @@ export default class help extends RBCommand {
 
 
 		if(!this.embedsGenerated) {
-			this.generateEmbeds();
+			this.generateEmbeds(command);
 			this.embedsGenerated = true;
 		}
 
@@ -42,7 +42,7 @@ export default class help extends RBCommand {
 		}
 	}
 
-	private static generateEmbeds(): void {
+	private static generateEmbeds({prefix}: {prefix: string}): void {
 		// arg-less help command
 		const masterEmbed = getObjectReference(this.genericHelpCommand);
 
@@ -65,7 +65,7 @@ export default class help extends RBCommand {
 
 			commandEmbed.addFields(
 				{name: "Description", value: command.description},
-				{name: "Usage", value: `\`${Bot.config.prefix}${command.usage}\``},
+				{name: "Usage", value: `\`${prefix}${command.usage}\``},
 				{name: "Aliases", value: command.aliases.join(", ") || "None"}
 			);
 
@@ -77,6 +77,6 @@ export default class help extends RBCommand {
 
 
 		masterEmbed.setDescription(masterEmbedDescription.trim());
-		masterEmbed.setFooter(`Use "${Bot.config.prefix}help <command>" to see information on a specific command`);
+		masterEmbed.setFooter(`Use "${prefix}help <command>" to see information on a specific command`);
 	}
 }

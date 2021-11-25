@@ -1,16 +1,8 @@
-import CommandHandler from "./CommandHandler.js";
 import f from "./util/console.js";
 
-import type {BotConfig, MessageCommand} from "./types/types.js";
-import type {Client, Message, TextChannel} from "discord.js";
 
 
-
-export default class Bot {
-	static client: Client;
-	static config: BotConfig;
-
-
+export default class Logger {
 	static log(...args: string[]): void {
 		console.log(f("Bold + Green", "[Bot] ", "Reset + White", ...args));
 	}

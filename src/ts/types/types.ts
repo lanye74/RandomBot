@@ -37,6 +37,7 @@ export type MessageCommand = {
 	mentions: User[],
 	message: Message,
 	name: string,
+	prefix: string,
 	sender: User
 };
 

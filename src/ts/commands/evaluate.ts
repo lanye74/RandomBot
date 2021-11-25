@@ -1,6 +1,5 @@
 import RBCommand from "../RBCommand.js";
 
-import bot_class from "../Bot.js"; // for use in the eval command if needed
 import command_handler_class from "../CommandHandler.js";
 import fsmanager_class from "../FSManager.js";
 
@@ -20,11 +19,9 @@ export default class evaluate extends RBCommand {
 			return;
 		}
 
-		const Bot = bot_class;
 		const CommandHandler = command_handler_class;
 		const FSManager = fsmanager_class;
-
-		console.log(CommandHandler.allCommands)
+		const {client} = command;
 
 
 		try {

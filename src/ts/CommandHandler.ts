@@ -1,4 +1,4 @@
-import Bot from "./Bot.js";
+import Logger from "./Logger.js";
 import FSManager from "./FSManager.js";
 
 import type {Message, TextChannel} from "discord.js";
@@ -26,7 +26,7 @@ export default class CommandHandler {
 		.then((files: string[]) => files.filter((file: string) => file.split(".")[1] === "js")); // only js files, not .d.ts
 
 
-		Bot.info("Loading commands...");
+		Logger.info("Loading commands...");
 
 
 		commands.forEach(command => {
@@ -34,7 +34,10 @@ export default class CommandHandler {
 		});
 
 
-		return Promise.all(commandLoaders.map(loader => loader()));
+		const loadedCommands = await Promise.all(commandLoaders.map(loader => loader()));
+
+		this.register(loadedCommands);
+		Logger.info("Commands loaded successfully.");
 	}
 
 	static loadCommand(command: string): Promise<any> {
@@ -68,7 +71,6 @@ export default class CommandHandler {
 	static handle(message: Message, prefix: string): void {
 		const text = message.content;
 
-		message.client
 
 		const inputString = text.split(prefix)[1];
 		const commandSegments = inputString.trim().split(" ");
@@ -82,11 +84,12 @@ export default class CommandHandler {
 			mentions: Array.from(message.mentions.users.values()),
 			message: message,
 			name: commandSegments[0],
+			prefix,
 			sender: message.author
 		};
 
 
-		const commandFunction: RBCommand | undefined = this.allCommands[command.name.toLowerCase()];
+		const commandFunction = this.allCommands[command.name.toLowerCase()];
 
 		commandFunction?.run(command);
 	}
