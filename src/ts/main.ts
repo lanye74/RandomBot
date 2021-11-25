@@ -1,3 +1,4 @@
+import CommandHandler from "./CommandHandler.js";
 import FSManager from "./FSManager.js";
 import Logger from "./Logger.js";
 import RandomBot from "./RandomBot.js";
@@ -8,25 +9,18 @@ import getCallerFile from "./util/getCallerFile.js";
 import {getObjectReference, getPropertyReference} from "./util/reference.js";
 import sleep from "./util/sleep.js";
 
-import * as consts from "./types/consts.js";
-import * as types from "./types/types.js";
+import * as Consts from "./types/consts.js";
+import type {BotConfig, FlexiblePromise, MessageCommand, RandomBotConfig, RandomBotInitOptions, RandomBotIntentPreset} from "./types/types.js";
 
 import RBCommand from "./RBCommand.js";
 
 
 
-export {FSManager};
-export {Logger};
-export {RandomBot};
+export {CommandHandler, FSManager, Logger, RandomBot};
 
-export {createFlexiblePromise};
-export {format};
-export {getCallerFile};
-export {getObjectReference};
-export {getPropertyReference};
-export {sleep};
+export {createFlexiblePromise, format, getCallerFile, getObjectReference, getPropertyReference, sleep};
 
-export {consts};
-export {types};
+export {Consts};
+export type {BotConfig, FlexiblePromise, MessageCommand, RandomBotConfig, RandomBotInitOptions, RandomBotIntentPreset};
 
 export {RBCommand};

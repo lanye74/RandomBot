@@ -43,15 +43,6 @@ export type MessageCommand = {
 
 
 
-export type ParsedRoleSave = {
-	date: number,
-	members: string[]
-	roleID: string,
-	saveID: string,
-};
-
-
-
 export type RandomBotConfig = {
 	token: string;
 	prefix: string;
@@ -69,7 +60,3 @@ export type RandomBotInitOptions = {
 
 
 export type RandomBotIntentPreset = keyof typeof RandomBotIntentPresets;
-
-
-
-export type SpamTask = [string, number, TextChannel];
