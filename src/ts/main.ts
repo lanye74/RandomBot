@@ -13,16 +13,16 @@ import * as types from "./types/types.js";
 
 
 
-exports.FSManager = FSManager;
-exports.Logger = Logger;
-exports.RandomBot = RandomBot;
+export {FSManager};
+export {Logger};
+export {RandomBot};
 
-exports.createFlexiblePromise = createFlexiblePromise;
-exports.format = format;
-exports.getCallerFile = getCallerFile;
-exports.getObjectReference = getObjectReference;
-exports.getPropertyReference = getPropertyReference;
-exports.sleep = sleep;
+export {createFlexiblePromise};
+export {format};
+export {getCallerFile};
+export {getObjectReference};
+export {getPropertyReference};
+export {sleep};
 
-exports.consts = consts;
-exports.types = types;
+export {consts};
+export {types};
