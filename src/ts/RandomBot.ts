@@ -1,5 +1,6 @@
 import {Client as DiscordClient, ClientEvents, IntentsString, Intents} from "discord.js";
 import Bot from "./Bot.js";
+import CommandHandler from "./CommandHandler.js";
 import FSManager from "./FSManager.js";
 import {RandomBotIntentPresets} from "./types/consts.js";
 
@@ -49,6 +50,13 @@ export class RandomBot {
 		if(this.intents.size === 0) {
 			throw new Error("No intents were provided.");
 		}
+
+
+		if(this.intents instanceof Intents) {
+			this.client = new DiscordClient({intents: this.intents});
+		} else {
+			this.client = new DiscordClient({intents: Array.from(this.intents)})
+		}
 	}
 
 	async initConfig(configLocation: string): Promise<void | Error> {
@@ -59,23 +67,36 @@ export class RandomBot {
 		this.config = await FSManager.call("readJSON", configLocation, [{encoding: "utf8"}]);
 	}
 
-	start(): void {
-		if(this.intents instanceof Intents) {
-			this.client = new DiscordClient({intents: this.intents});
-		} else {
-			this.client = new DiscordClient({intents: Array.from(this.intents)})
-		}
-
-
-
-		this.client.login(this.config.token);
-
+	async start(): Promise<void> {
 		this.client.on("ready", () => {
 			Bot.log("", "Bold", "Ready.");
 		});
+
+
+		this.client.login(this.config.token);
 	}
 
 	addListener<K extends keyof ClientEvents>(what: K, callback: ((...args: ClientEvents[K]) => any)): void {
 		this.client.on(what, callback);
+	}
+
+	async createCommandListener(where: string): Promise<void> {
+		CommandHandler.loadCommands(where)
+		.then(commands => CommandHandler.register(commands))
+		.then(() => Bot.info("Commands loaded successfully."))
+		.catch((error: any) => Bot.error(`Error while loading: ${error}`));
+
+
+		this.addListener("messageCreate", message => {
+			if(!message.content.startsWith(this.config.prefix) ||
+				!message.guild ||
+				!message.guild!.available ||
+				message.author.bot
+			) {
+				return;
+			}
+
+			CommandHandler.handle(message, this.config.prefix);
+		});
 	}
 }

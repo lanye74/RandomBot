@@ -1,8 +1,10 @@
 import Bot from "./Bot.js";
 import FSManager from "./FSManager.js";
 
+import type {Message, TextChannel} from "discord.js";
 import type {MessageCommand} from "./types/types.js";
 import type RBCommand from "./RBCommand.js";
+
 
 
 
@@ -16,8 +18,7 @@ export default class CommandHandler {
 
 
 		if(!(await FSManager.call("stat", from))) {
-			Bot.error("Invalid location to read files from.");
-			return;
+			throw new Error("Commands directory does not exist.");
 		}
 
 
@@ -64,7 +65,27 @@ export default class CommandHandler {
 		});
 	}
 
-	static handle(command: MessageCommand): void {
+	static handle(message: Message, prefix: string): void {
+		const text = message.content;
+
+		message.client
+
+		const inputString = text.split(prefix)[1];
+		const commandSegments = inputString.trim().split(" ");
+
+
+		const command: MessageCommand = {
+			args: commandSegments.slice(1), // all but first (command type)
+			channel: <TextChannel>message.channel,
+			client: message.client,
+			guild: message.guild!,
+			mentions: Array.from(message.mentions.users.values()),
+			message: message,
+			name: commandSegments[0],
+			sender: message.author
+		};
+
+
 		const commandFunction: RBCommand | undefined = this.allCommands[command.name.toLowerCase()];
 
 		commandFunction?.run(command);
