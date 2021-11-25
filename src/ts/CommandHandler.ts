@@ -15,7 +15,7 @@ export default class CommandHandler {
 		const commandLoaders: Function[] = [];
 
 
-		if(!(await FSManager.call("exists", from))) {
+		if(!(await FSManager.call("stat", from))) {
 			Bot.error("Invalid location to read files from.");
 			return;
 		}
@@ -65,13 +65,8 @@ export default class CommandHandler {
 	}
 
 	static handle(command: MessageCommand): void {
-		const commandFunction: RBCommand | undefined = this.allCommands[command.name];
+		const commandFunction: RBCommand | undefined = this.allCommands[command.name.toLowerCase()];
 
-
-		if(!commandFunction) {
-			command.channel.send("The command you're trying to use doesn't exist.");
-		} else {
-			commandFunction.run(command);
-		}
+		commandFunction?.run(command);
 	}
 }

@@ -66,7 +66,7 @@ export default class suspendRole extends RBCommand {
 
 		const fileWriteID = FSManager.generateProtectiveID();
 
-		const json = await FSManager.call("readFile", "./serverSaves.json", [{encoding: "utf8"}], fileWriteID).then((file: string) => JSON.parse(file));
+		const json = await FSManager.call("readJSON", "./serverSaves.json", [{encoding: "utf8"}], fileWriteID);
 
 		if(!json[guild.id]) {
 			json[guild.id] = {};
@@ -74,8 +74,8 @@ export default class suspendRole extends RBCommand {
 
 		json[guild.id][saveName] = saveData;
 
-		const newJSON = JSON.stringify(json, null, "\t");
-		await FSManager.call("writeFile", "./serverSaves.json", [newJSON], fileWriteID);
+
+		await FSManager.call("writeJSON", "./serverSaves.json", [json, {spaces: "\t"}], fileWriteID);
 
 
 		channel.send(`Successfully stored role "${role.name}" from ${membersWithIndex} member${(membersWithIndex > 1) ? "s" : ""} away as the message ID of the command (\`${saveName}\`).`);

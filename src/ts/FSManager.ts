@@ -22,20 +22,15 @@ export default class FSManager {
 	static async call<T = any>(operation: string, pathToOperate: string, data: any[] = [], fileProtector: number = 0): Promise<T> {
 		const promise = createFlexiblePromise();
 
-		const method = fs[operation];
-
-		if(!method) {
-			return Promise.reject("Invalid method");
-		}
-
 
 		this.queue.push(<FSTask>{
 			promise,
-			method,
+			operation,
 			path: (path.isAbsolute(pathToOperate)) ? pathToOperate: path.join(this.basePath, pathToOperate),
 			protectFile: fileProtector,
 			data
 		});
+
 
 		if(this.queue.length === 1 && !this.operating) {
 			setTimeout(() => {this.process()}, 0);
@@ -95,8 +90,15 @@ export default class FSManager {
 		this.operating = true;
 
 		const object = this.queue.shift();
-		const {promise, method, path, protectFile, data} = object!;
+		const {promise, operation, path, protectFile, data} = object!;
 
+		const method = fs[operation];
+
+
+		if(!method) {
+			promise.reject("Invalid method");
+			return;
+		}
 
 		// time to handle path protection
 

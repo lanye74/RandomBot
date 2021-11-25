@@ -5,10 +5,10 @@ import type {MessageCommand} from "../types/types";
 
 
 
-const botVersion = await FSManager.call("readFile", "./package.json", [{encoding: "utf8"}]);
+const {version: ver} = await FSManager.call("readJSON", "./package.json", [{encoding: "utf8"}]);
 
 export default class version extends RBCommand {
-	static botVersion = JSON.parse(botVersion).version; // probably should be moved to the Bot class
+	static botVersion = ver; // probably should be moved to the Bot class
 
 	static aliases = ["ver"];
 	static description = "Returns the current bot version.";

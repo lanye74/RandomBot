@@ -20,11 +20,11 @@ export type FlexiblePromise = {
 
 
 export type FSTask = {
-	promise: FlexiblePromise,
-	method: Function,
-	path: string,
-	protectFile: number,
 	data: any[]
+	operation: string,
+	path: string,
+	promise: FlexiblePromise,
+	protectFile: number,
 };
 
 
@@ -59,6 +59,7 @@ export type RandomBotConfig = {
 
 
 export type RandomBotInitOptions = {
+	commandsLocation?: string;
 	configLocation: string;
 	intents?: IntentsString[];
 	intentsBitField?: number;

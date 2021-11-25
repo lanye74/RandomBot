@@ -5,7 +5,7 @@ import FSManager from "./FSManager.js";
 
 
 
-Bot.config = JSON.parse(await FSManager.call("readFile", "./config.json", [{encoding: "utf8"}]));
+Bot.config = await FSManager.call("readJSON", "./config.json", [{encoding: "utf8"}]);
 
 Bot.client = new Discord.Client({
 	intents: ["GUILDS", "GUILD_MEMBERS", "GUILD_BANS", "GUILD_MESSAGES"],
@@ -24,7 +24,7 @@ CommandHandler.loadCommands("./src/js/commands")
 
 
 
-if(!(await FSManager.call("exists", "./serverSaves.json"))) {
+if(!(await FSManager.call("stat", "./serverSaves.json"))) {
 	await FSManager.call("write", "./serverSaves.json", ["{\"servers\": {}"]);
 }
 

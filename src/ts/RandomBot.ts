@@ -12,8 +12,8 @@ export class RandomBot {
 	config!: RandomBotConfig;
 	intents!: Set<IntentsString> | Intents;
 
-	constructor(options: RandomBotInitOptions) {
-		this.initConfig(options.configLocation);
+	async init(options: RandomBotInitOptions) {
+		await this.initConfig(options.configLocation);
 		this.configureIntents(options.intents, options.intentsBitField, options.intentsPresets);
 	}
 
@@ -52,11 +52,11 @@ export class RandomBot {
 	}
 
 	async initConfig(configLocation: string): Promise<void | Error> {
-		if(!(await FSManager.call("exists", configLocation))) {
+		if(!(await FSManager.call("stat", configLocation))) {
 			throw new Error("Invalid config file location.");
 		}
 
-		this.config = await FSManager.call("read", configLocation, [{encoding: "utf8"}]).then(data => JSON.parse(data));
+		this.config = await FSManager.call("readJSON", configLocation, [{encoding: "utf8"}]);
 	}
 
 	start(): void {
@@ -75,7 +75,7 @@ export class RandomBot {
 		});
 	}
 
-	setListener<K extends keyof ClientEvents>(what: K, callback: ((...args: ClientEvents[K]) => any)): void {
+	addListener<K extends keyof ClientEvents>(what: K, callback: ((...args: ClientEvents[K]) => any)): void {
 		this.client.on(what, callback);
 	}
 }

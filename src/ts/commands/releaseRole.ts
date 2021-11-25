@@ -25,7 +25,7 @@ export default class releaseRole extends RBCommand {
 
 
 		const fileWriteID = FSManager.generateProtectiveID();
-		const json = await FSManager.call("readFile", "./serverSaves.json", [{encoding: "utf8"}], fileWriteID).then((file: string) => JSON.parse(file));
+		const json = await FSManager.call("readJSON", "./serverSaves.json", [{encoding: "utf8"}], fileWriteID);
 
 
 		if(!json[guild.id]) {
@@ -49,8 +49,7 @@ export default class releaseRole extends RBCommand {
 		delete json[guild.id][saveLookup];
 
 
-		const newJSON = JSON.stringify(json, null, "\t");
-		await FSManager.call("writeFile", "./serverSaves.json", [newJSON], fileWriteID);
+		await FSManager.call("writeJSON", "./serverSaves.json", [json, {spaces: "\t"}], fileWriteID);
 
 
 		const saveData = saveDataCompressed.split("\n");
