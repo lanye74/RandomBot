@@ -1,9 +1,11 @@
 {
 	"name": "random-bot",
-	"version": "4.0.0",
+	"version": "4.0.4",
 	"description": "Funny bot",
 	"main": "src/js/main.js",
 	"type": "module",
+
+	"files": ["src/js/*", "README.md"],
 	"scripts": {},
 	"author": "Layne Ogden",
 	"license": "MIT",
