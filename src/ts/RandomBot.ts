@@ -16,6 +16,8 @@ export default class RandomBot {
 	async init(options: RandomBotInitOptions) {
 		await this.initConfig(options.configLocation);
 		this.configureIntents(options.intents, options.intentsBitField, options.intentsPresets);
+
+		FSManager.setBasePath(options.fileBasePath);
 	}
 
 	configureIntents(manualIntents?: IntentsString[], bitfield?: number, intentPresets?: RandomBotIntentPreset[]): void | Error {

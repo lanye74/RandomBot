@@ -133,4 +133,8 @@ export default class FSManager {
 
 		this.process();
 	}
+
+	static setBasePath(to: string | undefined) {
+		if(to) this.basePath = to;
+	}
 }
