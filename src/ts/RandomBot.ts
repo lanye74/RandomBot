@@ -14,10 +14,10 @@ export default class RandomBot {
 	intents!: Set<IntentsString> | Intents;
 
 	async init(options: RandomBotInitOptions) {
+		FSManager.setBasePath(options.fileManagerBasePath);
+
 		await this.initConfig(options.configLocation);
 		this.configureIntents(options.intents, options.intentsBitField, options.intentsPresets);
-
-		FSManager.setBasePath(options.fileManagerBasePath);
 	}
 
 	configureIntents(manualIntents?: IntentsString[], bitfield?: number, intentPresets?: RandomBotIntentPreset[]): void | Error {
