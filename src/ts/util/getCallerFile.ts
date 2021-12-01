@@ -3,10 +3,11 @@ export default function getCallerFile(index: number = 0) {
 
 	Error.prepareStackTrace = (_error, stack) => stack;
 
-	const stack = err.stack;
+	const {stack} = err;
 
 	Error.prepareStackTrace = undefined;
 
 	// @ts-ignore
-	return stack![index + 2].getFileName(); // [0] = this function, [1] = file invoking this, [2] = target
+	// return stack![index + 2].getFileName(); // [0] = this function, [1] = file invoking this, [2] = target
+	return stack!.map(a => a.getFileName());
 }

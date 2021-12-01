@@ -17,12 +17,12 @@ export default class CommandHandler {
 		const commandLoaders: Function[] = [];
 
 
-		if(!(await FSManager.call("stat", from))) {
+		if(!(await FSManager.call({method: "stat", path: from, internal: true}))) {
 			throw new Error("Commands directory does not exist.");
 		}
 
 
-		const commands: string[] = await FSManager.call("readdir", from)
+		const commands: string[] = await FSManager.call({method: "readdir", path: from, internal: true})
 		.then((files: string[]) => files.filter((file: string) => file.split(".")[1] === "js")); // only js files, not .d.ts
 
 

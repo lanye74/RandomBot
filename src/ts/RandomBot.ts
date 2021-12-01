@@ -14,7 +14,7 @@ export default class RandomBot {
 	intents!: Set<IntentsString> | Intents;
 
 	async init(options: RandomBotInitOptions) {
-		FSManager.setBasePath(options.fileManagerBasePath);
+		FSManager.setExternalBasePath(options.fileManagerBasePath);
 
 		await this.initConfig(options.configLocation);
 		this.configureIntents(options.intents, options.intentsBitField, options.intentsPresets);
@@ -62,11 +62,11 @@ export default class RandomBot {
 	}
 
 	async initConfig(configLocation: string): Promise<void | Error> {
-		if(!(await FSManager.call("stat", configLocation))) {
+		if(!(await FSManager.call({method: "stat", path: configLocation, internal: true}))) {
 			throw new Error("Invalid config file location.");
 		}
 
-		this.config = await FSManager.call("readJSON", configLocation, [{encoding: "utf8"}]);
+		this.config = await FSManager.call({method: "readJSON", path: configLocation, data: [{encoding: "utf8"}], internal: true});
 	}
 
 	async start(): Promise<void> {

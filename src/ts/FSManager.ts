@@ -1,10 +1,21 @@
 import createFlexiblePromise from "./util/createFlexiblePromise.js";
-import * as fs_bad from "fs-extra";
 import * as path from "path";
+
+import * as fs_bad from "fs-extra";
 // @ts-ignore
 const fs: fs_bad = fs_bad.default;
 
 import type {FSTask} from "./types/types.js";
+
+
+
+type FSCall = {
+	method: string,
+	path: string,
+	data?: any[],
+	fileProtector?: number,
+	internal?: boolean
+};
 
 
 
@@ -13,22 +24,28 @@ export default class FSManager {
 	private static operating: boolean = false;
 
 	private static thisPath = import.meta.url.split("/");
-	private static basePath = this.thisPath.slice(3, this.thisPath.length - 3).join("/"); // cuts off the file:/// and backtracks from src/js/FSManager.ts
+	private static internalBasePath = this.thisPath.slice(3, this.thisPath.length - 3).join("/"); // cuts off the file:/// and backtracks from src/js/FSManager.ts
+	private static externalBasePath = "";
 
 	private static protectedFiles: Map<string, number> = new Map();
 	private static haltedQueue: FSTask[] = []; // holds tasks that are waiting to write to a protected file
 	private static protectID: number = 1;
 
-	static async call<T = any>(operation: string, pathToOperate: string, data: any[] = [], fileProtector: number = 0): Promise<T> {
+	// static async call<T = any>(operation: string, pathToOperate: string, data: any[] = [], fileProtector: number = 0): Promise<T> {
+	static async call<T = any>(call: FSCall): Promise<T> {
+		const {method: operation, path: pathToOperate, data, fileProtector, internal} = call;
+
 		const promise = createFlexiblePromise();
+
+		const where = this.toCorrectPath(call);
 
 
 		this.queue.push(<FSTask>{
 			promise,
 			operation,
-			path: (path.isAbsolute(pathToOperate)) ? pathToOperate: path.join(this.basePath, pathToOperate),
-			protectFile: fileProtector,
-			data
+			path: where,
+			protectFile: fileProtector || 0,
+			data: data || []
 		});
 
 
@@ -44,19 +61,17 @@ export default class FSManager {
 		return ++this.protectID;
 	}
 
-	static release(what: string, id: number = 0) {
-		const targetPath = (path.isAbsolute(what)) ? what : path.join(this.basePath, what);
-
+	static release(fileName: string, id: number = 0) {
 		let targetIndexes: number[] = [];
 
-		this.protectedFiles.delete(targetPath);
+		this.protectedFiles.delete(fileName);
 
 
 		let tasks: FSTask[] = [];
 
 		if(id !== 0) {
 			tasks = this.haltedQueue.filter((task, index) => { // verbose filter to capture index
-				if(task.path === targetPath && task.protectFile === id) {
+				if(task.path === fileName && task.protectFile === id) {
 					targetIndexes.push(index);
 					return true;
 				}
@@ -65,7 +80,7 @@ export default class FSManager {
 			});
 		} else {
 			tasks = this.haltedQueue.filter((task, index) => {
-				if(task.path === targetPath) {
+				if(task.path === fileName) {
 					targetIndexes.push(index);
 					return true;
 				}
@@ -134,7 +149,12 @@ export default class FSManager {
 		this.process();
 	}
 
-	static setBasePath(to: string | undefined) {
-		if(to) this.basePath = to;
+	static setExternalBasePath(to: string) {
+		this.externalBasePath = to;
+	}
+
+	static toCorrectPath(call: FSCall) { // eventually only accept internal and path, but lazy
+		const pathNeeded = (call.internal) ? this.internalBasePath : this.externalBasePath;
+		return (path.isAbsolute(call.path)) ? call.path : path.join(pathNeeded, call.path);
 	}
 }

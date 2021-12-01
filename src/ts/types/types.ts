@@ -52,7 +52,7 @@ export type RandomBotConfig = {
 
 export type RandomBotInitOptions = {
 	configLocation: string;
-	fileManagerBasePath?: string;
+	fileManagerBasePath: string;
 	intents?: IntentsString[];
 	intentsBitField?: number;
 	intentsPresets?: RandomBotIntentPreset[];

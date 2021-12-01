@@ -3,7 +3,7 @@
 
 
 // export default interface RBCommand {
-// 	static readonly name?: string; // optional name, .name is a property of classes and just has to be restated
+// 	static readonly name?: string;
 // }
 
 // export default abstract class RBCommand {
@@ -28,7 +28,7 @@ declare class RBCommandInterface {
 	static readonly description: string;
 	static readonly friendlyName: string;
 	static readonly usage: string;
-	static readonly name: string;
+	static readonly name: string; // .name is a property of classes and just has to be restated because weird ts
 
 	static run(...args: any): any;
 }
