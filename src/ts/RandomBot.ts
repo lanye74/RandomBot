@@ -62,11 +62,13 @@ export default class RandomBot {
 	}
 
 	async initConfig(configLocation: string): Promise<void | Error> {
-		if(!(await FSManager.call({method: "stat", path: configLocation, internal: true}))) {
+		if(!(await FSManager.call({method: "stat", path: configLocation}))) {
 			throw new Error("Invalid config file location.");
 		}
 
-		this.config = await FSManager.call({method: "readJSON", path: configLocation, data: [{encoding: "utf8"}], internal: true});
+		// no internal, read from caller location
+		// :)
+		this.config = await FSManager.call({method: "readJSON", path: configLocation, data: [{encoding: "utf8"}]});
 	}
 
 	async start(): Promise<void> {

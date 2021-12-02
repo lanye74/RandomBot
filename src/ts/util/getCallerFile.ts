@@ -1,4 +1,4 @@
-export default function getCallerFile(index: number = 0) {
+export function getCallStack(): string[] {
 	const err = new Error();
 
 	Error.prepareStackTrace = (_error, stack) => stack;
@@ -8,6 +8,9 @@ export default function getCallerFile(index: number = 0) {
 	Error.prepareStackTrace = undefined;
 
 	// @ts-ignore
-	// return stack![index + 2].getFileName(); // [0] = this function, [1] = file invoking this, [2] = target
 	return stack!.map(a => a.getFileName());
+}
+
+export function getCallerFile(index: number = 0): string {
+	return getCallStack()[index + 2]; // [0] = this function, [1] = file invoking this, [2] = target
 }

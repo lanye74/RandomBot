@@ -7,6 +7,7 @@ const fs: fs_bad = fs_bad.default;
 
 import type {FSTask} from "./types/types.js";
 import Logger from "./Logger.js";
+import {getCallerFile, getCallStack} from "./util/getCallerFile.js";
 
 
 
@@ -35,7 +36,7 @@ export default class FSManager {
 	static async call<T = any>({method: operation, path: pathToOperate, data = [], fileProtector = 0, internal = false}: FSCall): Promise<T> {
 		const promise = createFlexiblePromise();
 
-		const where = this.toCorrectPath(internal, pathToOperate);
+		const where = this.normalizePath(pathToOperate, internal);
 
 
 		this.queue.push(<FSTask>{
@@ -148,8 +149,6 @@ export default class FSManager {
 	}
 
 	static setExternalBasePath(to: string) {
-		Logger.log("external path set to " + to);
-
 		let preparedString: string | string[] = to;
 
 		if(preparedString.startsWith("file:///")) {
@@ -160,14 +159,8 @@ export default class FSManager {
 		this.externalBasePath = path.normalize(preparedString);
 	}
 
-	static toCorrectPath(internal: boolean, pathToFix: string) { // eventually only accept internal and path, but lazy
+	static normalizePath(pathToFix: string, internal: boolean = false) { // eventually only accept internal and path, but lazy
 		const pathNeeded = (internal) ? this.internalBasePath : this.externalBasePath;
-
-		console.log(internal);
-		Logger.log(pathNeeded);
-		Logger.log(pathToFix);
-
-		Logger.log((path.isAbsolute(pathToFix)) ? pathToFix : path.join(pathNeeded, pathToFix));
 
 		return (path.isAbsolute(pathToFix)) ? pathToFix : path.join(pathNeeded, pathToFix);
 	}

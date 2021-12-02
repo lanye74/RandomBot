@@ -5,7 +5,7 @@ import RandomBot from "./RandomBot.js";
 
 import createFlexiblePromise from "./util/createFlexiblePromise.js";
 import format from "./util/console.js";
-import getCallerFile from "./util/getCallerFile.js";
+import {getCallerFile, getCallStack} from "./util/getCallerFile.js";
 import {getObjectReference, getPropertyReference} from "./util/reference.js";
 import sleep from "./util/sleep.js";
 
@@ -18,7 +18,7 @@ import RBCommand from "./RBCommand.js";
 
 export {CommandHandler, FSManager, Logger, RandomBot};
 
-export {createFlexiblePromise, format, getCallerFile, getObjectReference, getPropertyReference, sleep};
+export {createFlexiblePromise, format, getCallerFile, getCallStack, getObjectReference, getPropertyReference, sleep};
 
 export {Consts};
 export type {BotConfig, FlexiblePromise, MessageCommand, RandomBotConfig, RandomBotInitOptions, RandomBotIntentPreset};

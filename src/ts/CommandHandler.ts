@@ -17,12 +17,15 @@ export default class CommandHandler {
 		const commandLoaders: Function[] = [];
 
 
-		if(!(await FSManager.call({method: "stat", path: from, internal: true}))) {
+		if(!(await FSManager.call({method: "stat", path: from}))) { // not internal, called from user perspective
 			throw new Error("Commands directory does not exist.");
 		}
 
 
-		const commands: string[] = await FSManager.call({method: "readdir", path: from, internal: true})
+		const absoluteDir = FSManager.normalizePath(from);
+
+
+		const commands: string[] = await FSManager.call({method: "readdir", path: absoluteDir})
 		.then((files: string[]) => files.filter((file: string) => file.split(".")[1] === "js")); // only js files, not .d.ts
 
 
@@ -30,7 +33,7 @@ export default class CommandHandler {
 
 
 		commands.forEach(command => {
-			commandLoaders.push(() => this.loadCommand(command));
+			commandLoaders.push(() => this.loadCommand(command, absoluteDir));
 		});
 
 
@@ -40,9 +43,9 @@ export default class CommandHandler {
 		Logger.info("Commands loaded successfully.");
 	}
 
-	static loadCommand(command: string): Promise<any> {
+	static loadCommand(command: string, rootDir: string): Promise<any> {
 		return new Promise(resolve => {
-			import(`./commands/${command}`)
+			import(`file:///${rootDir}${command}`)
 			.then(module => resolve(module));
 		});
 	}
