@@ -6,6 +6,7 @@ import * as fs_bad from "fs-extra";
 const fs: fs_bad = fs_bad.default;
 
 import type {FSTask} from "./types/types.js";
+import Logger from "./Logger.js";
 
 
 
@@ -31,21 +32,18 @@ export default class FSManager {
 	private static haltedQueue: FSTask[] = []; // holds tasks that are waiting to write to a protected file
 	private static protectID: number = 1;
 
-	// static async call<T = any>(operation: string, pathToOperate: string, data: any[] = [], fileProtector: number = 0): Promise<T> {
-	static async call<T = any>(call: FSCall): Promise<T> {
-		const {method: operation, path: pathToOperate, data, fileProtector, internal} = call;
-
+	static async call<T = any>({method: operation, path: pathToOperate, data = [], fileProtector = 0, internal = false}: FSCall): Promise<T> {
 		const promise = createFlexiblePromise();
 
-		const where = this.toCorrectPath(call);
+		const where = this.toCorrectPath(internal, pathToOperate);
 
 
 		this.queue.push(<FSTask>{
 			promise,
 			operation,
 			path: where,
-			protectFile: fileProtector || 0,
-			data: data || []
+			protectFile: fileProtector,
+			data
 		});
 
 
@@ -150,11 +148,27 @@ export default class FSManager {
 	}
 
 	static setExternalBasePath(to: string) {
-		this.externalBasePath = to;
+		Logger.log("external path set to " + to);
+
+		let preparedString: string | string[] = to;
+
+		if(preparedString.startsWith("file:///")) {
+			preparedString = preparedString.split("/");
+			preparedString = preparedString.slice(3, this.thisPath.length - 3).join("/");
+		}
+
+		this.externalBasePath = path.normalize(preparedString);
 	}
 
-	static toCorrectPath(call: FSCall) { // eventually only accept internal and path, but lazy
-		const pathNeeded = (call.internal) ? this.internalBasePath : this.externalBasePath;
-		return (path.isAbsolute(call.path)) ? call.path : path.join(pathNeeded, call.path);
+	static toCorrectPath(internal: boolean, pathToFix: string) { // eventually only accept internal and path, but lazy
+		const pathNeeded = (internal) ? this.internalBasePath : this.externalBasePath;
+
+		console.log(internal);
+		Logger.log(pathNeeded);
+		Logger.log(pathToFix);
+
+		Logger.log((path.isAbsolute(pathToFix)) ? pathToFix : path.join(pathNeeded, pathToFix));
+
+		return (path.isAbsolute(pathToFix)) ? pathToFix : path.join(pathNeeded, pathToFix);
 	}
 }

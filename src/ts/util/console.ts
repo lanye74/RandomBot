@@ -45,7 +45,7 @@ function GetCC(key: string): string {
 
 
 
-export default function format(...args: string[]): string {
+export default function format(...args: any[]): string {
 	const argumentPairs: string[][] = [];
 	let stringBuilder = "";
 
