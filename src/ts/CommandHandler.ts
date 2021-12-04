@@ -26,7 +26,7 @@ export default class CommandHandler {
 
 
 		const commands: string[] = await FSManager.call({method: "readdir", path: absoluteDir})
-		.then((files: string[]) => files.filter((file: string) => file.split(".")[1] === "js")); // only js files, not .d.ts
+		.then((files: string[]) => files.filter((file: string) => file.split(".")[1] === "js")); // only js files
 
 
 		Logger.info("Loading commands...");
@@ -85,7 +85,7 @@ export default class CommandHandler {
 			client: message.client,
 			guild: message.guild!,
 			mentions: Array.from(message.mentions.users.values()),
-			message: message,
+			message,
 			name: commandSegments[0],
 			prefix,
 			sender: message.author

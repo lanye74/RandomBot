@@ -6,9 +6,9 @@ A generic discord.js bot framework for myself. please do not use this it's compl
 
 todo:
 - fix rbcommand implementantion (`...} as RBCommand`)?
-- completely rewrite fsmanager, pass in a single object instead of args
 - server specific prefixes
 - add default "timed" method to RBCommand, i.e. an implementation of what kill in lanyes-utilities has
+- make some commands defaults, e.g. help command, ping
 
 - electron
 

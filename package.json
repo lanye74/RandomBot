@@ -1,6 +1,6 @@
 {
 	"name": "random-bot",
-	"version": "1.2.0",
+	"version": "1.2.1",
 	"description": "Funny bot",
 	"main": "src/js/main.js",
 	"type": "module",

@@ -3,21 +3,9 @@ import * as path from "path";
 
 import * as fs_bad from "fs-extra";
 // @ts-ignore
-const fs: fs_bad = fs_bad.default;
+const fs: typeof fs_bad = fs_bad.default;
 
-import type {FSTask} from "./types/types.js";
-import Logger from "./Logger.js";
-import {getCallerFile, getCallStack} from "./util/getCallerFile.js";
-
-
-
-type FSCall = {
-	method: string,
-	path: string,
-	data?: any[],
-	fileProtector?: number,
-	internal?: boolean
-};
+import type {FSTask, FSCall} from "./types/types.js";
 
 
 
@@ -33,18 +21,18 @@ export default class FSManager {
 	private static haltedQueue: FSTask[] = []; // holds tasks that are waiting to write to a protected file
 	private static protectID: number = 1;
 
-	static async call<T = any>({method: operation, path: pathToOperate, data = [], fileProtector = 0, internal = false}: FSCall): Promise<T> {
+	static async call<T = any>({method: operation, path: pathToOperate, data, fileProtector, internal}: FSCall): Promise<T> {
 		const promise = createFlexiblePromise();
 
-		const where = this.normalizePath(pathToOperate, internal);
+		const where = this.normalizePath(pathToOperate, internal ?? false);
 
 
 		this.queue.push(<FSTask>{
 			promise,
 			operation,
 			path: where,
-			protectFile: fileProtector,
-			data
+			protectFile: fileProtector ?? 0,
+			data: data ?? []
 		});
 
 
@@ -106,13 +94,16 @@ export default class FSManager {
 		const object = this.queue.shift();
 		const {promise, operation, path, protectFile, data} = object!;
 
-		const method = fs[operation];
+
+
+		const method = <Function>fs[operation as keyof typeof fs]; // eugh
 
 
 		if(!method) {
-			promise.reject("Invalid method");
+			promise.reject("Invalid FS method called.");
 			return;
 		}
+
 
 		// time to handle path protection
 
@@ -152,14 +143,14 @@ export default class FSManager {
 		let preparedString: string | string[] = to;
 
 		if(preparedString.startsWith("file:///")) {
-			preparedString = preparedString.split("/");
-			preparedString = preparedString.slice(3, this.thisPath.length - 3).join("/");
+			preparedString = preparedString.slice(8);
+			preparedString += "/"; // ensure that it is treated as directory, if trailing, path.normalize will cut it out
 		}
 
 		this.externalBasePath = path.normalize(preparedString);
 	}
 
-	static normalizePath(pathToFix: string, internal: boolean = false) { // eventually only accept internal and path, but lazy
+	static normalizePath(pathToFix: string, internal: boolean = false): string {
 		const pathNeeded = (internal) ? this.internalBasePath : this.externalBasePath;
 
 		return (path.isAbsolute(pathToFix)) ? pathToFix : path.join(pathNeeded, pathToFix);

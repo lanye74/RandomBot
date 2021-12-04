@@ -19,6 +19,16 @@ export type FlexiblePromise = {
 
 
 
+export type FSCall = {
+	method: string,
+	path: string,
+	data?: any[],
+	fileProtector?: number,
+	internal?: boolean
+};
+
+
+
 export type FSTask = {
 	data: any[]
 	operation: string,
