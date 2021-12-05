@@ -80,6 +80,7 @@ export default class CommandHandler {
 
 
 		const command: MessageCommand = {
+			attachments: message.attachments.toJSON(),
 			args: commandSegments.slice(1), // all but first (command type)
 			channel: <TextChannel>message.channel,
 			client: message.client,

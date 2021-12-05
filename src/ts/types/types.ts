@@ -1,54 +1,55 @@
 import {RandomBotIntentPresets} from "./consts.js";
 
-import type {Client, Guild, IntentsString, Message, TextChannel, User} from "discord.js";
+import type {Client, Guild, IntentsString, Message, MessageAttachment, TextChannel, User} from "discord.js";
 
 
 
 export type BotConfig = {
-	prefix: string,
-	token: string
+	prefix: string;
+	token: string;
 };
 
 
 
 export type FlexiblePromise = {
-	promise: Promise<any>,
-	resolve: Function,
-	reject: Function
+	promise: Promise<any>;
+	resolve: Function;
+	reject: Function;
 };
 
 
 
 export type FSCall = {
-	method: string,
-	path: string,
-	data?: any[],
-	fileProtector?: number,
-	internal?: boolean
+	method: string;
+	path: string;
+	data?: any[];
+	fileProtector?: number;
+	internal?: boolean;
 };
 
 
 
 export type FSTask = {
 	data: any[]
-	operation: string,
-	path: string,
-	promise: FlexiblePromise,
-	protectFile: number,
+	operation: string;
+	path: string;
+	promise: FlexiblePromise;
+	protectFile: number;
 };
 
 
 
 export type MessageCommand = {
-	args: string[],
-	channel: TextChannel,
-	client: Client,
-	guild: Guild,
-	mentions: User[],
-	message: Message,
-	name: string,
-	prefix: string,
-	sender: User
+	attachments: MessageAttachment[];
+	args: string[];
+	channel: TextChannel;
+	client: Client;
+	guild: Guild;
+	mentions: User[];
+	message: Message;
+	name: string;
+	prefix: string;
+	sender: User;
 };
 
 
