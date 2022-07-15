@@ -13,11 +13,11 @@ export default class RandomBot {
 	config!: RandomBotConfig;
 	intents!: Set<IntentsString> | Intents;
 
-	async init(options: RandomBotInitOptions) {
-		FSManager.setExternalBasePath(options.fileManagerBasePath);
+	async init({fileManagerBasePath, configLocation, intents, intentsBitField, intentsPresets}: RandomBotInitOptions) { // why is the with keyword deprecated :(
+		FSManager.setExternalBasePath(fileManagerBasePath);
 
-		await this.initConfig(options.configLocation);
-		this.configureIntents(options.intents, options.intentsBitField, options.intentsPresets);
+		await this.initConfig(configLocation);
+		this.configureIntents(intents, intentsBitField, intentsPresets);
 	}
 
 	configureIntents(manualIntents?: IntentsString[], bitfield?: number, intentPresets?: RandomBotIntentPreset[]): void | Error {

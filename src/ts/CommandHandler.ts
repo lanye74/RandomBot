@@ -7,7 +7,6 @@ import type RBCommand from "./RBCommand.js";
 
 
 
-
 export default class CommandHandler {
 	static commands: {[name: string]: RBCommand} = {};
 	static aliases: {[name: string]: RBCommand} = {};

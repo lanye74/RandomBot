@@ -1,21 +1,23 @@
 {
 	"name": "random-bot",
-	"version": "1.2.2",
+	"version": "1.2.3",
 	"description": "Funny bot",
 	"main": "src/js/main.js",
 	"type": "module",
-
-	"files": ["src/js/*", "README.md"],
+	"files": [
+		"src/js/*",
+		"README.md"
+	],
 	"scripts": {},
 	"author": "Layne Ogden",
 	"license": "MIT",
 	"dependencies": {
-		"discord.js": "^13.3.1",
-		"electron": "^15.3.1",
-		"fs-extra": "^10.0.0"
+		"discord.js": "^13.8.1",
+		"fs-extra": "^10.1.0"
 	},
 	"devDependencies": {
 		"@types/fs-extra": "^9.0.13",
-		"@types/node": "^15.14.9"
+		"@types/node": "^18.0.4",
+		"electron": "^19.0.8"
 	}
 }
