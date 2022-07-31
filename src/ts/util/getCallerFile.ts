@@ -11,6 +11,8 @@ export function getCallStack(): string[] {
 	return stack!.map(a => a.getFileName());
 }
 
+
+
 export function getCallerFile(index: number = 0): string {
 	return getCallStack()[index + 2]; // [0] = this function, [1] = file invoking this, [2] = target
 }

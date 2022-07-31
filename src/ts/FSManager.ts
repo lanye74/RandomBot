@@ -1,6 +1,5 @@
 import createFlexiblePromise from "./util/createFlexiblePromise.js";
 import * as path from "path";
-
 import * as fs_bad from "fs-extra";
 // @ts-ignore
 const fs: typeof fs_bad = fs_bad.default;

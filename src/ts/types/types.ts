@@ -1,6 +1,6 @@
 import {RandomBotIntentPresets} from "./consts.js";
 
-import type {Client, Guild, IntentsString, Message, MessageAttachment, TextChannel, User} from "discord.js";
+import type {Client, Guild, GatewayIntentsString, Message, Attachment, TextChannel, User} from "discord.js";
 
 
 
@@ -40,7 +40,7 @@ export type FSTask = {
 
 
 export type MessageCommand = {
-	attachments: MessageAttachment[];
+	attachments: Attachment[];
 	args: string[];
 	channel: TextChannel;
 	client: Client;
@@ -64,7 +64,7 @@ export type RandomBotConfig = {
 export type RandomBotInitOptions = {
 	configLocation: string;
 	fileManagerBasePath: string;
-	intents?: IntentsString[];
+	intents?: GatewayIntentsString[];
 	intentsBitField?: number;
 	intentsPresets?: RandomBotIntentPreset[];
 };

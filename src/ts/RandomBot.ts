@@ -1,4 +1,4 @@
-import {Client as DiscordClient, ClientEvents, IntentsString, Intents} from "discord.js";
+import {Client as DiscordClient, ClientEvents, GatewayIntentsString, IntentsBitField} from "discord.js";
 import Logger from "./Logger.js";
 import CommandHandler from "./CommandHandler.js";
 import FSManager from "./FSManager.js";
@@ -11,7 +11,7 @@ import type {RandomBotConfig, RandomBotInitOptions, RandomBotIntentPreset} from 
 export default class RandomBot {
 	client!: DiscordClient;
 	config!: RandomBotConfig;
-	intents!: Set<IntentsString> | Intents;
+	intents!: Set<GatewayIntentsString> | IntentsBitField;
 
 	async init({fileManagerBasePath, configLocation, intents, intentsBitField, intentsPresets}: RandomBotInitOptions) { // why is the with keyword deprecated :(
 		FSManager.setExternalBasePath(fileManagerBasePath);
@@ -20,14 +20,14 @@ export default class RandomBot {
 		this.configureIntents(intents, intentsBitField, intentsPresets);
 	}
 
-	configureIntents(manualIntents?: IntentsString[], bitfield?: number, intentPresets?: RandomBotIntentPreset[]): void | Error {
+	configureIntents(manualIntents?: GatewayIntentsString[], bitfield?: number, intentPresets?: RandomBotIntentPreset[]): void | Error {
 		if(bitfield) {
-			this.intents = new Intents(bitfield);
+			this.intents = new IntentsBitField(bitfield);
 			return;
 		}
 
 
-		this.intents = new Set<IntentsString>();
+		this.intents = new Set<GatewayIntentsString>();
 
 
 		if(manualIntents) {
@@ -54,7 +54,7 @@ export default class RandomBot {
 		}
 
 
-		if(this.intents instanceof Intents) {
+		if(this.intents instanceof IntentsBitField) {
 			this.client = new DiscordClient({intents: this.intents});
 		} else {
 			this.client = new DiscordClient({intents: Array.from(this.intents)})
