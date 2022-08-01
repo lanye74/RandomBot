@@ -85,8 +85,7 @@ export default class RandomBot {
 	}
 
 	async createCommandListener(where: string): Promise<void> {
-		CommandHandler.loadCommands(where);
-
+		await CommandHandler.loadCommands(where);
 
 		this.addListener("messageCreate", message => {
 			if(!message.content.startsWith(this.config.prefix) ||
