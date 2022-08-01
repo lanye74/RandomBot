@@ -39,13 +39,13 @@ type ConsoleColor = keyof typeof ConsoleColors;
 
 
 
-function GetCC(key: string): string {
+function GetCC(key: string) {
 	return ConsoleColors[<ConsoleColor>key.toUpperCase()];
 }
 
 
 
-export default function format(...args: any[]): string {
+export default function format(...args: any[]) {
 	const argumentPairs: string[][] = [];
 	let stringBuilder = "";
 

@@ -12,7 +12,7 @@ export default class CommandHandler {
 	static aliases: {[name: string]: RBCommand} = {};
 	static allCommands: {[name: string]: RBCommand} = {};
 
-	static async loadCommands(from: string): Promise<any> {
+	static async loadCommands(from: string) {
 		const commandLoaders: Function[] = [];
 
 
@@ -42,7 +42,7 @@ export default class CommandHandler {
 		Logger.info("Commands loaded successfully.");
 	}
 
-	static loadCommand(command: string, rootDir: string): Promise<any> {
+	static loadCommand(command: string, rootDir: string) {
 		return new Promise(resolve => {
 			import(`file:///${rootDir}${command}`)
 			.then(module => resolve(module));
@@ -59,7 +59,7 @@ export default class CommandHandler {
 		Object.assign(this.allCommands, this.commands, this.aliases);
 	}
 
-	static setCommand(input: any): void {
+	static setCommand(input: any) {
 		const command = <RBCommand>input.default;
 		const lowerName = command.name.toLowerCase();
 
@@ -70,9 +70,8 @@ export default class CommandHandler {
 		});
 	}
 
-	static handle(message: Message, prefix: string): void {
+	static handle(message: Message, prefix: string) {
 		const text = message.content;
-
 
 		const inputString = text.split(prefix)[1];
 		const commandSegments = inputString.trim().split(" ");
@@ -93,7 +92,11 @@ export default class CommandHandler {
 
 
 		const commandFunction = this.allCommands[command.name.toLowerCase()];
+		if(!commandFunction) {
+			Logger.error(`Command not found: ${command.name}`);
+			return;
+		}
 
-		commandFunction?.run(command);
+		commandFunction.run(command);
 	}
 }

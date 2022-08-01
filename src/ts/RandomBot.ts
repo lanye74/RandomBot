@@ -20,7 +20,7 @@ export default class RandomBot {
 		this.configureIntents(intents, intentsBitField, intentsPresets);
 	}
 
-	configureIntents(manualIntents?: GatewayIntentsString[], bitfield?: number, intentPresets?: RandomBotIntentPreset[]): void | Error {
+	configureIntents(manualIntents?: GatewayIntentsString[], bitfield?: number, intentPresets?: RandomBotIntentPreset[]) {
 		if(bitfield) {
 			this.intents = new IntentsBitField(bitfield);
 			return;
@@ -61,7 +61,7 @@ export default class RandomBot {
 		}
 	}
 
-	async initConfig(configLocation: string): Promise<void | Error> {
+	async initConfig(configLocation: string) {
 		if(!(await FSManager.call({method: "stat", path: configLocation}))) {
 			throw new Error("Invalid config file location.");
 		}
@@ -71,7 +71,7 @@ export default class RandomBot {
 		this.config = await FSManager.call({method: "readJSON", path: configLocation, data: [{encoding: "utf8"}]});
 	}
 
-	async start(): Promise<void> {
+	async start() {
 		this.client.on("ready", () => {
 			Logger.log("", "Bold", "Ready.");
 		});
@@ -80,11 +80,11 @@ export default class RandomBot {
 		this.client.login(this.config.token);
 	}
 
-	addListener<K extends keyof ClientEvents>(what: K, callback: ((...args: ClientEvents[K]) => any)): void {
+	addListener<K extends keyof ClientEvents>(what: K, callback: ((...args: ClientEvents[K]) => any)) {
 		this.client.on(what, callback);
 	}
 
-	async createCommandListener(where: string): Promise<void> {
+	async createCommandListener(where: string) {
 		await CommandHandler.loadCommands(where);
 
 		this.addListener("messageCreate", message => {

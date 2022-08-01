@@ -12,14 +12,14 @@ export function getObjectReference<T>(object: T): T {
 
 
 
-export function getPropertyReference<O extends object, K extends keyof O>(object: O, prop: K): O[K] {
+export function getPropertyReference<O extends object, K extends keyof O>(object: O, property: K): O[K] {
 	return {
 		get value(): any {
-			return object[prop];
+			return object[property];
 		},
 
 		set value(to: any) {
-			object[prop] = to;
+			object[property] = to;
 		}
 	}.value; // return the getters and setters without having to access ref.value
 }

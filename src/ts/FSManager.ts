@@ -20,7 +20,7 @@ export default class FSManager {
 	private static haltedQueue: FSTask[] = []; // holds tasks that are waiting to write to a protected file
 	private static protectID: number = 1;
 
-	static async call<T = any>({method: operation, path: pathToOperate, data, fileProtector, internal}: FSCall): Promise<T> {
+	static async call({method: operation, path: pathToOperate, data, fileProtector, internal}: FSCall) {
 		const promise = createFlexiblePromise();
 
 		const where = this.normalizePath(pathToOperate, internal ?? false);
@@ -40,10 +40,11 @@ export default class FSManager {
 			// please don't ask me why I can't just do setTimeout(this.process, 0)
 		}
 
+		// yeah
 		return this.queue[this.queue.length - 1].promise.promise;
 	}
 
-	static generateProtectiveID(): number {
+	static generateProtectiveID() {
 		return ++this.protectID;
 	}
 
@@ -87,7 +88,7 @@ export default class FSManager {
 		}
 	}
 
-	static async process(): Promise<void> {
+	static async process() {
 		this.operating = true;
 
 		const object = this.queue.shift();
@@ -149,7 +150,7 @@ export default class FSManager {
 		this.externalBasePath = path.normalize(preparedString);
 	}
 
-	static normalizePath(pathToFix: string, internal: boolean = false): string {
+	static normalizePath(pathToFix: string, internal: boolean = false) {
 		const pathNeeded = (internal) ? this.internalBasePath : this.externalBasePath;
 
 		return (path.isAbsolute(pathToFix)) ? pathToFix : path.join(pathNeeded, pathToFix);
