@@ -12,11 +12,11 @@
 	"author": "Layne Ogden",
 	"license": "MIT",
 	"dependencies": {
-		"discord.js": "^14.1.2",
-		"fs-extra": "^10.1.0"
+		"discord.js": "^14.7.1",
+		"fs-extra": "^11.1.0"
 	},
 	"devDependencies": {
-		"@types/fs-extra": "^9.0.13",
-		"@types/node": "^18.0.4"
+		"@types/fs-extra": "^11.0.1",
+		"@types/node": "^18.15.0"
 	}
 }
